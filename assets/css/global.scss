@@ -1,0 +1,8 @@
+#text,
+#text ~ .resize {
+  display: none;
+}
+
+body.lock-scroll {
+  overflow: hidden;
+}
