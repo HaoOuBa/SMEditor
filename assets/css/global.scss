@@ -6,3 +6,159 @@
 body.lock-scroll {
   overflow: hidden;
 }
+
+.cm-container {
+  background-color: #282c34;
+  .cm-tools {
+  }
+  .cm-mainer {
+    .cm-editor {
+      font-size: 18px;
+      .cm-scroller {
+        font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+        font-feature-settings: "liga" 0, "calt" 0;
+
+        // 折叠装订线
+        .cm-gutters {
+          background-color: #282c34;
+          border-right: none;
+          color: #636d83;
+          user-select: none;
+          .cm-activeLineGutter {
+            color: #abb2bf;
+            background-color: transparent;
+          }
+          .cm-lineNumbers {
+            .cm-gutterElement {
+              padding: 0 0 0 20px;
+            }
+          }
+          .cm-foldGutter {
+            .cm-gutterElement {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              padding: 0 2px 0 5px;
+              .cm-fold,
+              .cm-unfold {
+                width: 13px;
+                height: 100%;
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                background-position: center center;
+              }
+              .cm-fold {
+                opacity: 0;
+                transition: opacity 0.5s;
+                background-image: url(data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiPjxwYXRoIGQ9Ik0xNDAuMTYgMzMyLjE2YTQwLjk2IDQwLjk2IDAgMCAwIDAgNTguMjRMNDgzLjIgNzI4Ljk2YTQwLjk2IDQwLjk2IDAgMCAwIDU4LjI0IDBsMzQyLjQtMzM4LjU2YTQwLjk2IDQwLjk2IDAgMSAwLTU4LjI0LTU4LjI0TDUxMiA2NDAgMTk3Ljc2IDMzMi4xNmE0MC45NiA0MC45NiAwIDAgMC01Ny42IDB6IiBmaWxsPSIjYzVjNWM1Ii8+PC9zdmc+);
+              }
+              .cm-unfold {
+                background-image: url(data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiPjxwYXRoIGQ9Ik0zMzIuMTYgODgzLjg0YTQwLjk2IDQwLjk2IDAgMCAwIDU4LjI0IDBMNzI4Ljk2IDU0MC44YTQwLjk2IDQwLjk2IDAgMCAwIDAtNTguMjRMMzkwLjQgMTQwLjE2YTQwLjk2IDQwLjk2IDAgMCAwLTU4LjI0IDU4LjI0TDY0MCA1MTIgMzMyLjE2IDgyNi4yNGE0MC45NiA0MC45NiAwIDAgMCAwIDU3LjZ6IiBmaWxsPSIjYzVjNWM1Ii8+PC9zdmc+);
+              }
+            }
+          }
+          &:hover {
+            .cm-foldGutter {
+              .cm-gutterElement {
+                .cm-fold {
+                  opacity: 1;
+                }
+              }
+            }
+          }
+        }
+
+        .cm-content {
+          color: #abb2bf;
+
+          // 当前高亮行
+          .cm-activeLine {
+            background-color: #2c313c;
+          }
+
+          // 匹配到括号
+          .cm-matchingBracket {
+            color: #abb2bf;
+            background-color: rgba(0, 100, 0, 0.1);
+            border: 1px solid #888;
+            margin: -1px;
+            box-sizing: border-box;
+          }
+
+          // 未匹配到括号
+          .cm-nonmatchingBracket {
+            color: rgba(255, 18, 18, 0.8);
+          }
+
+          // markdown - 标题
+          .cmt-heading {
+            color: #e06c75;
+          }
+
+          // 加粗
+          .cmt-strong {
+            color: #d19a66;
+            font-weight: bold;
+          }
+
+          // 倾斜
+          .cmt-emphasis {
+            color: #c678dd;
+            font-style: italic;
+          }
+
+          // 注释
+          .cmt-comment {
+            color: #5c6370;
+            font-style: italic;
+          }
+
+          // 标签名称
+          .cmt-typeName {
+            color: #e06c75;
+          }
+
+          // 属性名
+          .cmt-propertyName {
+            color: #d19a66;
+          }
+
+          // 字符串
+          .cmt-string {
+            color: #98c379;
+          }
+
+          // 选择匹配
+          .cm-selectionMatch {
+            background-color: rgba(87, 87, 87, 0.72);
+          }
+
+          // 代码折叠样式
+          .cm-foldPlaceholder {
+            background-color: transparent;
+            border: none;
+            color: grey;
+            border-radius: 0;
+            margin: 0;
+            padding: 0 2px;
+          }
+        }
+
+        // 选择文本
+        .cm-selectionBackground {
+          background-color: #3e4451;
+        }
+
+        // 光标
+        .cm-cursor {
+          border-left: 2px solid #528bff;
+          margin-left: 0;
+          box-sizing: border-box;
+        }
+      }
+    }
+    .cm-focused {
+      outline: none;
+    }
+  }
+}

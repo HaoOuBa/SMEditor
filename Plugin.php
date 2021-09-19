@@ -60,6 +60,7 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
     echo
     <<<EOF
       <link rel="stylesheet" href="$pluginUrl/assets/css/global.css?version=$version" />
-    EOF;
+      <script src="$pluginUrl/assets/js/rollup.bundle.js?version=$version"></script>
+EOF;
   }
 }
