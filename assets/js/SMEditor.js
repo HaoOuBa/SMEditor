@@ -22,6 +22,7 @@ class SMEditor {
     this.handleCreateEditor();
     this.handleCreateTools();
     this.handleInsertFile();
+    this.handleAutoSave();
   }
 
   /**
@@ -37,7 +38,12 @@ class SMEditor {
    * 
    */
   handleCreateDom() {
-    $('#text').before('<div class="cm-container"><div class="cm-menu"></div></div>');
+    $('#text').before(`
+      <div class="cm-container">
+        <div class="cm-autosave"></div>
+        <div class="cm-menu"></div>
+      </div>
+    `);
   }
 
   /**
@@ -127,6 +133,46 @@ class SMEditor {
       const str = `${isImage ? '!' : ''}[${file}](${url})\n`;
       console.log(str);
     };
+  }
+
+  /**
+   * 自动保存
+   * 
+   */
+  handleAutoSave() {
+    if (window.SMEditor.autoSave !== 1) return;
+    const formEl = $('#text')[0].form;
+    let cid = $(formEl).find('input[name="cid"]').val();
+    let _TempTimer = null;
+    let _TempTitle = $(formEl).find('input[name="title"]').val();
+    let _TempText = $(formEl).find('textarea[name="text"]').val();
+    const saveFn = () => {
+      $(formEl).find('input[name="cid"]').val(cid);
+      $(formEl).find('textarea[name="text"]').val(this._cm.state.doc.toString());
+      let _NewTempTitle = $(formEl).find('input[name="title"]').val();
+      let _NewTempText = $(formEl).find('textarea[name="text"]').val();
+      if (_NewTempTitle.trim() === '') return;
+      if (_TempTitle !== _NewTempTitle || _TempText !== _NewTempText) {
+        _TempTitle = _NewTempTitle;
+        _TempText = _NewTempText;
+        $('.cm-autosave').addClass('active');
+        $.ajax({
+          url: formEl.action,
+          type: 'POST',
+          data: $(formEl).serialize() + '&do=save',
+          dataType: 'json',
+          success: res => {
+            cid = res.cid;
+            _TempTimer = setTimeout(() => {
+              $('.cm-autosave').removeClass('active');
+              clearTimeout(_TempTimer);
+            }, 1000);
+          }
+        });
+      }
+    };
+    setInterval(saveFn, 5000);
+
   }
 }
 

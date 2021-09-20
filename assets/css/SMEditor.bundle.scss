@@ -8,10 +8,40 @@ body.lock-scroll {
 }
 
 .cm-container {
+  position: relative;
   display: flex;
   flex-direction: column;
-  height: 650px;
+  height: 550px;
   background-color: #282c34;
+
+  .cm-autosave {
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      z-index: 500;
+      pointer-events: none;
+      height: 3px;
+      width: 0;
+      transition: width 0.85s;
+    }
+    &::before {
+      right: 50%;
+      background: linear-gradient(to left, #4cd964, #5ac8fa, #007aff);
+    }
+    &::after {
+      left: 50%;
+      background: linear-gradient(to right, #4cd964, #5ac8fa, #007aff);
+    }
+    &.active {
+      &::before,
+      &::after {
+        width: 50%;
+      }
+    }
+  }
+
   .cm-menu {
     position: relative;
     background-color: rgb(33, 37, 43);
@@ -50,7 +80,7 @@ body.lock-scroll {
       right: 0;
       height: 6px;
       bottom: -6px;
-      z-index: 999;
+      z-index: 250;
       transition: box-shadow 0.25s;
       user-select: none;
       pointer-events: none;
@@ -60,6 +90,7 @@ body.lock-scroll {
       box-shadow: #000 0 6px 6px -6px inset;
     }
   }
+
   .cm-editor {
     flex: 1;
     min-height: 0;
@@ -89,8 +120,11 @@ body.lock-scroll {
       .cm-content {
         color: #abb2bf;
         caret-color: #528bff;
+        padding: 0;
 
         .cm-line {
+          padding: 0;
+
           // 代码折叠样式
           .cm-foldPlaceholder {
             background-color: transparent;

@@ -57,9 +57,15 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
   {
     $version = '1.0.0';
     $pluginUrl = Helper::options()->pluginUrl . '/SMEditor';
+    $autoSave = Helper::options()->autoSave;
     echo
     <<<EOF
       <link rel="stylesheet" href="$pluginUrl/assets/css/SMEditor.bundle.css?version=$version" />
+      <script>
+        window.SMEditor = {
+          autoSave: $autoSave,
+        }
+      </script>
       <script src="$pluginUrl/assets/js/SMEditor.bundle.js?version=$version"></script>
 EOF;
   }
