@@ -1,0 +1,237 @@
+#text,
+#text ~ .resize {
+  display: none;
+}
+
+body.lock-scroll {
+  overflow: hidden;
+}
+
+.cm-container {
+  display: flex;
+  flex-direction: column;
+  height: 650px;
+  background-color: #282c34;
+  .cm-menu {
+    position: relative;
+    background-color: rgb(33, 37, 43);
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(30px, 1fr));
+    gap: 5px;
+    padding: 5px;
+
+    .cm-menu-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 2px;
+      transition: background-color 0.25s;
+
+      svg {
+        fill: #9da5b4;
+        transition: fill 0.25s;
+      }
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+
+        svg {
+          fill: rgba(255, 255, 255, 0.75);
+        }
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 6px;
+      bottom: -6px;
+      z-index: 999;
+      transition: box-shadow 0.25s;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    &.active::after {
+      box-shadow: #000 0 6px 6px -6px inset;
+    }
+  }
+  .cm-editor {
+    flex: 1;
+    min-height: 0;
+    font-size: 18px;
+
+    .cm-scroller {
+      font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+      font-feature-settings: "liga" 0, "calt" 0;
+
+      // 折叠装订线
+      .cm-gutters {
+        background-color: #282c34;
+        border-right: none;
+        color: #636d83;
+        user-select: none;
+        .cm-activeLineGutter {
+          color: #abb2bf;
+          background-color: transparent;
+        }
+        .cm-lineNumbers {
+          .cm-gutterElement {
+            padding: 0 0 0 20px;
+          }
+        }
+        .cm-foldGutter {
+          .cm-gutterElement {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 2px 0 5px;
+            .cm-fold,
+            .cm-unfold {
+              width: 13px;
+              height: 100%;
+              background-size: 100% 100%;
+              background-repeat: no-repeat;
+              background-position: center center;
+            }
+            .cm-fold {
+              opacity: 0;
+              transition: opacity 0.5s;
+              background-image: url(data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiPjxwYXRoIGQ9Ik0xNDAuMTYgMzMyLjE2YTQwLjk2IDQwLjk2IDAgMCAwIDAgNTguMjRMNDgzLjIgNzI4Ljk2YTQwLjk2IDQwLjk2IDAgMCAwIDU4LjI0IDBsMzQyLjQtMzM4LjU2YTQwLjk2IDQwLjk2IDAgMSAwLTU4LjI0LTU4LjI0TDUxMiA2NDAgMTk3Ljc2IDMzMi4xNmE0MC45NiA0MC45NiAwIDAgMC01Ny42IDB6IiBmaWxsPSIjYzVjNWM1Ii8+PC9zdmc+);
+            }
+            .cm-unfold {
+              background-image: url(data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiPjxwYXRoIGQ9Ik0zMzIuMTYgODgzLjg0YTQwLjk2IDQwLjk2IDAgMCAwIDU4LjI0IDBMNzI4Ljk2IDU0MC44YTQwLjk2IDQwLjk2IDAgMCAwIDAtNTguMjRMMzkwLjQgMTQwLjE2YTQwLjk2IDQwLjk2IDAgMCAwLTU4LjI0IDU4LjI0TDY0MCA1MTIgMzMyLjE2IDgyNi4yNGE0MC45NiA0MC45NiAwIDAgMCAwIDU3LjZ6IiBmaWxsPSIjYzVjNWM1Ii8+PC9zdmc+);
+            }
+          }
+        }
+        &:hover {
+          .cm-foldGutter {
+            .cm-gutterElement {
+              .cm-fold {
+                opacity: 1;
+              }
+            }
+          }
+        }
+      }
+
+      .cm-content {
+        color: #abb2bf;
+        caret-color: #528bff;
+
+        .cm-line {
+          // 代码折叠样式
+          .cm-foldPlaceholder {
+            background-color: transparent;
+            border: none;
+            color: grey;
+            border-radius: 0;
+            margin: 0;
+            padding: 0 2px;
+          }
+
+          // 选中匹配文本
+          .cm-selectionMatch {
+            background-color: rgba(87, 87, 87, 0.72);
+          }
+
+          // 匹配到括号
+          .cm-matchingBracket {
+            color: #abb2bf;
+            background-color: rgba(0, 100, 0, 0.1);
+            border: 1px solid #888;
+            margin: -1px;
+            box-sizing: border-box;
+          }
+
+          // 未匹配到括号
+          .cm-nonmatchingBracket {
+            color: rgba(255, 18, 18, 0.8);
+          }
+
+          // markdown - 标题
+          .cmt-heading {
+            color: #e06c75;
+          }
+
+          // markdown - 加粗
+          .cmt-strong {
+            color: #d19a66;
+            font-weight: bold;
+          }
+
+          // markdown - 倾斜
+          .cmt-emphasis {
+            color: #c678dd;
+            font-style: italic;
+          }
+
+          // 注释
+          .cmt-comment {
+            color: #5c6370;
+            font-style: italic;
+          }
+
+          // 标签名称
+          .cmt-typeName {
+            color: #e06c75;
+          }
+
+          // 属性名
+          .cmt-propertyName {
+            color: #d19a66;
+          }
+
+          // 字符串
+          .cmt-string {
+            color: #98c379;
+          }
+
+          // 当前高亮行
+          &.cm-activeLine {
+            background-color: #2c313c;
+          }
+        }
+      }
+
+      // 选择文本
+      .cm-selectionLayer {
+        .cm-selectionBackground {
+          background: #3e4451;
+        }
+      }
+
+      // 光标
+      .cm-cursorLayer {
+        .cm-cursor {
+          border-left: 2px solid #528bff;
+          margin-left: 0;
+          box-sizing: border-box;
+          border-radius: 1px;
+        }
+      }
+
+      &::-webkit-scrollbar {
+        width: 14px;
+        border-left: 1px solid #404349;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(78, 86, 102, 0.5);
+        &:hover {
+          background-color: rgba(90, 99, 117, 0.5);
+        }
+        &:active {
+          background-color: rgba(116, 125, 145, 0.5);
+        }
+      }
+    }
+
+    &.cm-focused {
+      outline: none;
+    }
+  }
+}

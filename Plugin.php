@@ -59,8 +59,8 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
     $pluginUrl = Helper::options()->pluginUrl . '/SMEditor';
     echo
     <<<EOF
-      <link rel="stylesheet" href="$pluginUrl/assets/css/global.css?version=$version" />
-      <script src="$pluginUrl/assets/js/rollup.bundle.js?version=$version"></script>
+      <link rel="stylesheet" href="$pluginUrl/assets/css/SMEditor.bundle.css?version=$version" />
+      <script src="$pluginUrl/assets/js/SMEditor.bundle.js?version=$version"></script>
 EOF;
   }
 }

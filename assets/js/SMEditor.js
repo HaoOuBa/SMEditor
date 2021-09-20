@@ -11,13 +11,18 @@ import { lineNumbers, highlightActiveLineGutter } from "@codemirror/gutter";
 import { defaultKeymap } from "@codemirror/commands";
 import { history, historyKeymap } from "@codemirror/history";
 import { commentKeymap } from "@codemirror/comment";
-import { indentOnInput } from "@codemirror/language"
+import { indentOnInput } from "@codemirror/language";
+import menu from './menu'
 
 class SMEditor {
   constructor() {
+    // 编辑器实例
+    this._cm = null;
     this.handleViewPort();
     this.handleCreateDom();
     this.handleCreateEditor();
+    this.handleCreateTools();
+    this.handleInsertFile();
   }
 
   /**
@@ -33,15 +38,7 @@ class SMEditor {
    * 
    */
   handleCreateDom() {
-    $('#text').before(`
-        <div class="cm-container">
-            <div class="cm-tools"></div>
-            <div class="cm-mainer">
-                <div class="cm-resize"></div>
-                <div class="cm-preview"><div class="cm-preview-content"></div></div>
-            </div>
-        </div>
-    `);
+    $('#text').before('<div class="cm-container"><div class="cm-menu"></div></div>');
   }
 
   /**
@@ -49,7 +46,7 @@ class SMEditor {
    * 
    */
   handleCreateEditor() {
-    const cm = new EditorView({
+    this._cm = new EditorView({
       state: EditorState.create({
         doc: $('#text').val(),
         extensions: [
@@ -89,8 +86,6 @@ class SMEditor {
             base: markdownLanguage,
             codeLanguages: languages
           }),
-          // 超出换行
-          EditorView.lineWrapping,
           // 按键映射
           keymap.of([
             ...closeBracketsKeymap,
@@ -98,13 +93,53 @@ class SMEditor {
             ...historyKeymap,
             ...foldKeymap,
             ...commentKeymap,
-          ])
+          ]),
+          // 超出换行
+          EditorView.lineWrapping,
+          // dom 事件监听
+          EditorView.domEventHandlers({
+            scroll: ({ target: { scrollTop } }) => {
+              scrollTop > 10 ? $('.cm-menu').addClass('active') : $('.cm-menu').removeClass('active');
+            },
+            paste: ({ clipboardData }) => {
+              if (!clipboardData || !clipboardData.items || !clipboardData.items.length) return;
+              const items = clipboardData.items;
+            }
+          })
+
         ],
       }),
     });
-    $('.cm-mainer').prepend(cm.dom);
+    $('.cm-container').append(this._cm.dom);
     const formEle = $('#text')[0].form;
-    formEle && formEle.addEventListener('submit', () => $('#text').val(cm.state.doc.toString()));
+    formEle && formEle.addEventListener('submit', () => $('#text').val(this._cm.state.doc.toString()));
+  }
+
+  /**
+   * 创建编辑器功能案件
+   * 
+   */
+  handleCreateTools() {
+    menu.forEach(item => {
+      const el = $(`<div class="cm-menu-item" title="${item.title}">${item.innerHTML}</div>`);
+      el.on('click', () => {
+        switch (item.type) {
+        }
+      })
+      $('.cm-menu').append(el);
+    })
+  }
+
+  /**
+   * 点击附件将地址追加到编辑器中
+   * 
+   */
+  handleInsertFile() {
+    if (!Typecho) return;
+    Typecho.insertFileToEditor = (file, url, isImage) => {
+      const str = `${isImage ? '!' : ''}[${file}](${url})\n`;
+      console.log(str);
+    };
   }
 }
 
