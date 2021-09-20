@@ -6,7 +6,6 @@ import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { classHighlightStyle } from '@codemirror/highlight';
 import { highlightSelectionMatches } from "@codemirror/search";
-import { foldGutter, codeFolding, foldKeymap } from "@codemirror/fold";
 import { lineNumbers, highlightActiveLineGutter } from "@codemirror/gutter";
 import { defaultKeymap } from "@codemirror/commands";
 import { history, historyKeymap } from "@codemirror/history";
@@ -70,17 +69,6 @@ class SMEditor {
           highlightActiveLineGutter(),
           // 重新缩进
           indentOnInput(),
-          // 折叠代码
-          foldGutter({
-            markerDOM: open => {
-              const div = document.createElement('div');
-              div.className = open ? 'cm-fold' : 'cm-unfold';
-              div.title = open ? '折叠' : '展开';
-              return div;
-            },
-          }),
-          // 折叠代码后的样式
-          codeFolding({ placeholderText: '⋯' }),
           // 高亮 markdown 语法
           markdown({
             base: markdownLanguage,
@@ -91,7 +79,6 @@ class SMEditor {
             ...closeBracketsKeymap,
             ...defaultKeymap,
             ...historyKeymap,
-            ...foldKeymap,
             ...commentKeymap,
           ]),
           // 超出换行

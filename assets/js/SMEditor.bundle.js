@@ -8684,7 +8684,7 @@
             }
         });
     }
-    const baseTheme$4 = /*@__PURE__*/buildTheme("." + baseThemeID, {
+    const baseTheme$3 = /*@__PURE__*/buildTheme("." + baseThemeID, {
         "&": {
             position: "relative !important",
             boxSizing: "border-box",
@@ -9698,7 +9698,7 @@
         }
         mountStyles() {
             this.styleModules = this.state.facet(styleModule);
-            StyleModule.mount(this.root, this.styleModules.concat(baseTheme$4).reverse());
+            StyleModule.mount(this.root, this.styleModules.concat(baseTheme$3).reverse());
         }
         readMeasured() {
             if (this.updateState == 2 /* Updating */)
@@ -13266,14 +13266,6 @@
             return changes.length ? [tr, { changes, sequential: true }] : tr;
         });
     }
-
-    /**
-    A facet that registers a code folding service. When called with
-    the extent of a line, such a function should return a foldable
-    range that starts on that line (but continues beyond it), if one
-    can be found.
-    */
-    const foldService = /*@__PURE__*/Facet.define();
     /**
     This node prop is used to associate folding information with
     syntax node types. Given a syntax node, it should check whether
@@ -13286,48 +13278,12 @@
     the first and the last child of a syntax node. Useful for nodes
     that start and end with delimiters.
     */
-    function foldInside$1(node) {
+    function foldInside(node) {
         let first = node.firstChild, last = node.lastChild;
         return first && first.to < last.from ? { from: first.to, to: last.type.isError ? node.to : last.from } : null;
     }
-    function syntaxFolding(state, start, end) {
-        let tree = syntaxTree(state);
-        if (tree.length == 0)
-            return null;
-        let inner = tree.resolveInner(end);
-        let found = null;
-        for (let cur = inner; cur; cur = cur.parent) {
-            if (cur.to <= end || cur.from > end)
-                continue;
-            if (found && cur.from < start)
-                break;
-            let prop = cur.type.prop(foldNodeProp);
-            if (prop) {
-                let value = prop(cur, state);
-                if (value && value.from <= end && value.from >= start && value.to > end)
-                    found = value;
-            }
-        }
-        return found;
-    }
-    /**
-    Check whether the given line is foldable. First asks any fold
-    services registered through
-    [`foldService`](https://codemirror.net/6/docs/ref/#language.foldService), and if none of them return
-    a result, tries to query the [fold node
-    prop](https://codemirror.net/6/docs/ref/#language.foldNodeProp) of syntax nodes that cover the end
-    of the line.
-    */
-    function foldable(state, lineStart, lineEnd) {
-        for (let service of state.facet(foldService)) {
-            let result = service(state, lineStart, lineEnd);
-            if (result)
-                return result;
-        }
-        return syntaxFolding(state, lineStart, lineEnd);
-    }
 
-    const baseTheme$3 = /*@__PURE__*/EditorView.baseTheme({
+    const baseTheme$2 = /*@__PURE__*/EditorView.baseTheme({
         ".cm-matchingBracket": { color: "#0b0" },
         ".cm-nonmatchingBracket": { color: "#a22" }
     });
@@ -13370,7 +13326,7 @@
     });
     const bracketMatchingUnique = [
         bracketMatchingState,
-        baseTheme$3
+        baseTheme$2
     ];
     /**
     Create an extension that enables bracket matching. Whenever the
@@ -13459,7 +13415,7 @@
         return iter.done ? { start: startToken, matched: false } : null;
     }
 
-    const defaults$4 = {
+    const defaults$3 = {
         brackets: ["(", "[", "{", "'", '"'],
         before: ")]}'\":;>"
     };
@@ -13513,7 +13469,7 @@
         return fromCodePoint(ch < 128 ? ch : ch + 1);
     }
     function config(state, pos) {
-        return state.languageDataAt("closeBrackets", pos)[0] || defaults$4;
+        return state.languageDataAt("closeBrackets", pos)[0] || defaults$3;
     }
     function handleInput(view, from, to, insert) {
         if (view.composing)
@@ -13534,7 +13490,7 @@
     */
     const deleteBracketPair = ({ state, dispatch }) => {
         let conf = config(state, state.selection.main.head);
-        let tokens = conf.brackets || defaults$4.brackets;
+        let tokens = conf.brackets || defaults$3.brackets;
         let dont = null, changes = state.changeByRange(range => {
             if (range.empty) {
                 let before = prevChar(state.doc, range.head);
@@ -13571,12 +13527,12 @@
     */
     function insertBracket(state, bracket) {
         let conf = config(state, state.selection.main.head);
-        let tokens = conf.brackets || defaults$4.brackets;
+        let tokens = conf.brackets || defaults$3.brackets;
         for (let tok of tokens) {
             let closed = closing$2(codePointAt(tok, 0));
             if (bracket == tok)
                 return closed == tok ? handleSame(state, tok, tokens.indexOf(tok + tok + tok) > -1)
-                    : handleOpen(state, tok, closed, conf.before || defaults$4.before);
+                    : handleOpen(state, tok, closed, conf.before || defaults$3.before);
             if (bracket == closed && closedBracketAt(state, state.selection.main.from))
                 return handleClose(state, tok, closed);
         }
@@ -18556,7 +18512,7 @@
                     Declaration: /*@__PURE__*/continuedIndent()
                 }),
                 /*@__PURE__*/foldNodeProp.add({
-                    Block: foldInside$1
+                    Block: foldInside
                 }),
                 /*@__PURE__*/styleTags({
                     "import charset namespace keyframes": tags$1.definitionKeyword,
@@ -18779,7 +18735,7 @@
     }
 
     const MaxInfoWidth = 300;
-    const baseTheme$2 = /*@__PURE__*/EditorView.baseTheme({
+    const baseTheme$1 = /*@__PURE__*/EditorView.baseTheme({
         ".cm-tooltip.cm-tooltip-autocomplete": {
             "& > ul": {
                 fontFamily: "monospace",
@@ -19028,7 +18984,7 @@
                 let effects = spec.effects = [setActive.of(active)];
                 if (editor.state.field(snippetState, false) === undefined)
                     effects.push(StateEffect.appendConfig.of([snippetState.init(() => active), addSnippetKeymap,
-                        snippetPointerHandler, baseTheme$2]));
+                        snippetPointerHandler, baseTheme$1]));
             }
             editor.dispatch(editor.state.update(spec));
         };
@@ -19178,7 +19134,7 @@
                     }
                 }),
                 /*@__PURE__*/foldNodeProp.add({
-                    "Block ClassBody SwitchBody EnumBody ObjectExpression ArrayExpression": foldInside$1,
+                    "Block ClassBody SwitchBody EnumBody ObjectExpression ArrayExpression": foldInside,
                     BlockComment(tree) { return { from: tree.from + 2, to: tree.to - 2 }; }
                 }),
                 /*@__PURE__*/styleTags({
@@ -21469,25 +21425,8 @@
     in all gutters for the line).
     */
     const gutterLineClass = /*@__PURE__*/Facet.define();
-    const defaults$3 = {
-        class: "",
-        renderEmptyElements: false,
-        elementStyle: "",
-        markers: () => RangeSet.empty,
-        lineMarker: () => null,
-        initialSpacer: null,
-        updateSpacer: null,
-        domEventHandlers: {}
-    };
     const activeGutters = /*@__PURE__*/Facet.define();
-    /**
-    Define an editor gutter. The order in which the gutters appear is
-    determined by their extension priority.
-    */
-    function gutter(config) {
-        return [gutters(), activeGutters.of(Object.assign(Object.assign({}, defaults$3), config))];
-    }
-    const baseTheme$1 = /*@__PURE__*/EditorView.baseTheme({
+    const baseTheme = /*@__PURE__*/EditorView.baseTheme({
         ".cm-gutters": {
             display: "flex",
             height: "100%",
@@ -21544,7 +21483,7 @@
     function gutters(config) {
         let result = [
             gutterView,
-            baseTheme$1
+            baseTheme
         ];
         if (config && config.fixed === false)
             result.push(unfixGutters.of(true));
@@ -21852,283 +21791,6 @@
     function highlightActiveLineGutter() {
         return activeLineGutterHighlighter;
     }
-
-    function mapRange(range, mapping) {
-        let from = mapping.mapPos(range.from, 1), to = mapping.mapPos(range.to, -1);
-        return from >= to ? undefined : { from, to };
-    }
-    /**
-    State effect that can be attached to a transaction to fold the
-    given range. (You probably only need this in exceptional
-    circumstances—usually you'll just want to let
-    [`foldCode`](https://codemirror.net/6/docs/ref/#fold.foldCode) and the [fold
-    gutter](https://codemirror.net/6/docs/ref/#fold.foldGutter) create the transactions.)
-    */
-    const foldEffect = /*@__PURE__*/StateEffect.define({ map: mapRange });
-    /**
-    State effect that unfolds the given range (if it was folded).
-    */
-    const unfoldEffect = /*@__PURE__*/StateEffect.define({ map: mapRange });
-    function selectedLines(view) {
-        let lines = [];
-        for (let { head } of view.state.selection.ranges) {
-            if (lines.some(l => l.from <= head && l.to >= head))
-                continue;
-            lines.push(view.visualLineAt(head));
-        }
-        return lines;
-    }
-    const foldState = /*@__PURE__*/StateField.define({
-        create() {
-            return Decoration.none;
-        },
-        update(folded, tr) {
-            folded = folded.map(tr.changes);
-            for (let e of tr.effects) {
-                if (e.is(foldEffect) && !foldExists(folded, e.value.from, e.value.to))
-                    folded = folded.update({ add: [foldWidget.range(e.value.from, e.value.to)] });
-                else if (e.is(unfoldEffect))
-                    folded = folded.update({ filter: (from, to) => e.value.from != from || e.value.to != to,
-                        filterFrom: e.value.from, filterTo: e.value.to });
-            }
-            // Clear folded ranges that cover the selection head
-            if (tr.selection) {
-                let onSelection = false, { head } = tr.selection.main;
-                folded.between(head, head, (a, b) => { if (a < head && b > head)
-                    onSelection = true; });
-                if (onSelection)
-                    folded = folded.update({
-                        filterFrom: head,
-                        filterTo: head,
-                        filter: (a, b) => b <= head || a >= head
-                    });
-            }
-            return folded;
-        },
-        provide: f => EditorView.decorations.from(f)
-    });
-    function foldInside(state, from, to) {
-        var _a;
-        let found = null;
-        (_a = state.field(foldState, false)) === null || _a === void 0 ? void 0 : _a.between(from, to, (from, to) => {
-            if (!found || found.from > from)
-                found = { from, to };
-        });
-        return found;
-    }
-    function foldExists(folded, from, to) {
-        let found = false;
-        folded.between(from, from, (a, b) => { if (a == from && b == to)
-            found = true; });
-        return found;
-    }
-    function maybeEnable(state, other) {
-        return state.field(foldState, false) ? other : other.concat(StateEffect.appendConfig.of(codeFolding()));
-    }
-    /**
-    Fold the lines that are selected, if possible.
-    */
-    const foldCode = view => {
-        for (let line of selectedLines(view)) {
-            let range = foldable(view.state, line.from, line.to);
-            if (range) {
-                view.dispatch({ effects: maybeEnable(view.state, [foldEffect.of(range), announceFold(view, range)]) });
-                return true;
-            }
-        }
-        return false;
-    };
-    /**
-    Unfold folded ranges on selected lines.
-    */
-    const unfoldCode = view => {
-        if (!view.state.field(foldState, false))
-            return false;
-        let effects = [];
-        for (let line of selectedLines(view)) {
-            let folded = foldInside(view.state, line.from, line.to);
-            if (folded)
-                effects.push(unfoldEffect.of(folded), announceFold(view, folded, false));
-        }
-        if (effects.length)
-            view.dispatch({ effects });
-        return effects.length > 0;
-    };
-    function announceFold(view, range, fold = true) {
-        let lineFrom = view.state.doc.lineAt(range.from).number, lineTo = view.state.doc.lineAt(range.to).number;
-        return EditorView.announce.of(`${view.state.phrase(fold ? "Folded lines" : "Unfolded lines")} ${lineFrom} ${view.state.phrase("to")} ${lineTo}.`);
-    }
-    /**
-    Fold all top-level foldable ranges.
-    */
-    const foldAll = view => {
-        let { state } = view, effects = [];
-        for (let pos = 0; pos < state.doc.length;) {
-            let line = view.visualLineAt(pos), range = foldable(state, line.from, line.to);
-            if (range)
-                effects.push(foldEffect.of(range));
-            pos = (range ? view.visualLineAt(range.to) : line).to + 1;
-        }
-        if (effects.length)
-            view.dispatch({ effects: maybeEnable(view.state, effects) });
-        return !!effects.length;
-    };
-    /**
-    Unfold all folded code.
-    */
-    const unfoldAll = view => {
-        let field = view.state.field(foldState, false);
-        if (!field || !field.size)
-            return false;
-        let effects = [];
-        field.between(0, view.state.doc.length, (from, to) => { effects.push(unfoldEffect.of({ from, to })); });
-        view.dispatch({ effects });
-        return true;
-    };
-    /**
-    Default fold-related key bindings.
-
-     - Ctrl-Shift-[ (Cmd-Alt-[ on macOS): [`foldCode`](https://codemirror.net/6/docs/ref/#fold.foldCode).
-     - Ctrl-Shift-] (Cmd-Alt-] on macOS): [`unfoldCode`](https://codemirror.net/6/docs/ref/#fold.unfoldCode).
-     - Ctrl-Alt-[: [`foldAll`](https://codemirror.net/6/docs/ref/#fold.foldAll).
-     - Ctrl-Alt-]: [`unfoldAll`](https://codemirror.net/6/docs/ref/#fold.unfoldAll).
-    */
-    const foldKeymap = [
-        { key: "Ctrl-Shift-[", mac: "Cmd-Alt-[", run: foldCode },
-        { key: "Ctrl-Shift-]", mac: "Cmd-Alt-]", run: unfoldCode },
-        { key: "Ctrl-Alt-[", run: foldAll },
-        { key: "Ctrl-Alt-]", run: unfoldAll }
-    ];
-    const defaultConfig = {
-        placeholderDOM: null,
-        placeholderText: "…"
-    };
-    const foldConfig = /*@__PURE__*/Facet.define({
-        combine(values) { return combineConfig(values, defaultConfig); }
-    });
-    /**
-    Create an extension that configures code folding.
-    */
-    function codeFolding(config) {
-        let result = [foldState, baseTheme];
-        if (config)
-            result.push(foldConfig.of(config));
-        return result;
-    }
-    const foldWidget = /*@__PURE__*/Decoration.replace({ widget: /*@__PURE__*/new class extends WidgetType {
-            ignoreEvents() { return false; }
-            toDOM(view) {
-                let { state } = view, conf = state.facet(foldConfig);
-                if (conf.placeholderDOM)
-                    return conf.placeholderDOM();
-                let element = document.createElement("span");
-                element.textContent = conf.placeholderText;
-                element.setAttribute("aria-label", state.phrase("folded code"));
-                element.title = state.phrase("unfold");
-                element.className = "cm-foldPlaceholder";
-                element.onclick = event => {
-                    let line = view.visualLineAt(view.posAtDOM(event.target));
-                    let folded = foldInside(view.state, line.from, line.to);
-                    if (folded)
-                        view.dispatch({ effects: unfoldEffect.of(folded) });
-                    event.preventDefault();
-                };
-                return element;
-            }
-        } });
-    const foldGutterDefaults = {
-        openText: "⌄",
-        closedText: "›",
-        markerDOM: null,
-    };
-    class FoldMarker extends GutterMarker {
-        constructor(config, open) {
-            super();
-            this.config = config;
-            this.open = open;
-        }
-        eq(other) { return this.config == other.config && this.open == other.open; }
-        toDOM(view) {
-            if (this.config.markerDOM)
-                return this.config.markerDOM(this.open);
-            let span = document.createElement("span");
-            span.textContent = this.open ? this.config.openText : this.config.closedText;
-            span.title = view.state.phrase(this.open ? "Fold line" : "Unfold line");
-            return span;
-        }
-    }
-    /**
-    Create an extension that registers a fold gutter, which shows a
-    fold status indicator before foldable lines (which can be clicked
-    to fold or unfold the line).
-    */
-    function foldGutter(config = {}) {
-        let fullConfig = Object.assign(Object.assign({}, foldGutterDefaults), config);
-        let canFold = new FoldMarker(fullConfig, true), canUnfold = new FoldMarker(fullConfig, false);
-        let markers = ViewPlugin.fromClass(class {
-            constructor(view) {
-                this.from = view.viewport.from;
-                this.markers = this.buildMarkers(view);
-            }
-            update(update) {
-                if (update.docChanged || update.viewportChanged ||
-                    update.startState.facet(language) != update.state.facet(language) ||
-                    update.startState.field(foldState, false) != update.state.field(foldState, false))
-                    this.markers = this.buildMarkers(update.view);
-            }
-            buildMarkers(view) {
-                let builder = new RangeSetBuilder();
-                view.viewportLines(line => {
-                    let mark = foldInside(view.state, line.from, line.to) ? canUnfold
-                        : foldable(view.state, line.from, line.to) ? canFold : null;
-                    if (mark)
-                        builder.add(line.from, line.from, mark);
-                });
-                return builder.finish();
-            }
-        });
-        return [
-            markers,
-            gutter({
-                class: "cm-foldGutter",
-                markers(view) { var _a; return ((_a = view.plugin(markers)) === null || _a === void 0 ? void 0 : _a.markers) || RangeSet.empty; },
-                initialSpacer() {
-                    return new FoldMarker(fullConfig, false);
-                },
-                domEventHandlers: {
-                    click: (view, line) => {
-                        let folded = foldInside(view.state, line.from, line.to);
-                        if (folded) {
-                            view.dispatch({ effects: unfoldEffect.of(folded) });
-                            return true;
-                        }
-                        let range = foldable(view.state, line.from, line.to);
-                        if (range) {
-                            view.dispatch({ effects: foldEffect.of(range) });
-                            return true;
-                        }
-                        return false;
-                    }
-                }
-            }),
-            codeFolding()
-        ];
-    }
-    const baseTheme = /*@__PURE__*/EditorView.baseTheme({
-        ".cm-foldPlaceholder": {
-            backgroundColor: "#eee",
-            border: "1px solid #ddd",
-            color: "#888",
-            borderRadius: ".2em",
-            margin: "0 1px",
-            padding: "0 1px",
-            cursor: "pointer"
-        },
-        ".cm-foldGutter .cm-gutterElement": {
-            padding: "0 1px",
-            cursor: "pointer"
-        }
-    });
 
     function updateSel(sel, by) {
         return EditorSelection.create(sel.ranges.map(by), sel.mainIndex);
@@ -23512,17 +23174,6 @@
               highlightActiveLineGutter(),
               // 重新缩进
               indentOnInput(),
-              // 折叠代码
-              foldGutter({
-                markerDOM: open => {
-                  const div = document.createElement('div');
-                  div.className = open ? 'cm-fold' : 'cm-unfold';
-                  div.title = open ? '折叠' : '展开';
-                  return div;
-                },
-              }),
-              // 折叠代码后的样式
-              codeFolding({ placeholderText: '⋯' }),
               // 高亮 markdown 语法
               markdown({
                 base: markdownLanguage,
@@ -23533,7 +23184,6 @@
                 ...closeBracketsKeymap,
                 ...defaultKeymap,
                 ...historyKeymap,
-                ...foldKeymap,
                 ...commentKeymap,
               ]),
               // 超出换行
@@ -24779,7 +24429,7 @@
                     Statement: /*@__PURE__*/continuedIndent({ except: /^{/ })
                 }),
                 /*@__PURE__*/foldNodeProp.add({
-                    "DeclarationList CompoundStatement EnumeratorList FieldDeclarationList InitializerList": foldInside$1,
+                    "DeclarationList CompoundStatement EnumeratorList FieldDeclarationList InitializerList": foldInside,
                     BlockComment(tree) { return { from: tree.from + 2, to: tree.to - 2 }; }
                 }),
                 /*@__PURE__*/styleTags({
@@ -24889,7 +24539,7 @@
                 }),
                 /*@__PURE__*/foldNodeProp.add({
                     ["Block SwitchBlock ClassBody ElementValueArrayInitializer ModuleBody EnumBody " +
-                        "ConstructorBody InterfaceBody ArrayInitializer"]: foldInside$1,
+                        "ConstructorBody InterfaceBody ArrayInitializer"]: foldInside,
                     BlockComment(tree) { return { from: tree.from + 2, to: tree.to - 2 }; }
                 }),
                 /*@__PURE__*/styleTags({
@@ -25010,7 +24660,7 @@
                     Array: /*@__PURE__*/continuedIndent({ except: /^\s*\]/ })
                 }),
                 /*@__PURE__*/foldNodeProp.add({
-                    "Object Array": foldInside$1
+                    "Object Array": foldInside
                 }),
                 /*@__PURE__*/styleTags({
                     String: tags$1.string,
@@ -25225,7 +24875,7 @@
                     }
                 }),
                 /*@__PURE__*/foldNodeProp.add({
-                    "Body ArrayExpression DictionaryExpression": foldInside$1
+                    "Body ArrayExpression DictionaryExpression": foldInside
                 }),
                 /*@__PURE__*/styleTags({
                     "async '*' '**' FormatConversion": tags$1.modifier,
@@ -25395,7 +25045,7 @@
                 }),
                 /*@__PURE__*/foldNodeProp.add(type => {
                     if (/(Block|edTokens|List)$/.test(type.name))
-                        return foldInside$1;
+                        return foldInside;
                     if (type.name == "BlockComment")
                         return tree => ({ from: tree.from + 2, to: tree.to - 2 });
                     return undefined;
