@@ -11,16 +11,15 @@ import { defaultKeymap } from "@codemirror/commands";
 import { history, historyKeymap } from "@codemirror/history";
 import { commentKeymap } from "@codemirror/comment";
 import { indentOnInput } from "@codemirror/language";
-import menu from './menu'
+import Menu from './menu';
 
 class SMEditor {
   constructor() {
-    // 编辑器实例
     this._cm = null;
     this.handleViewPort();
     this.handleCreateDom();
     this.handleCreateEditor();
-    this.handleCreateTools();
+    this.handleCreateMenu();
     this.handleInsertFile();
     this.handleAutoSave();
   }
@@ -42,6 +41,7 @@ class SMEditor {
       <div class="cm-container">
         <div class="cm-autosave"></div>
         <div class="cm-menu"></div>
+        <div class="cm-preview"></div>
       </div>
     `);
   }
@@ -82,10 +82,10 @@ class SMEditor {
           }),
           // 按键映射
           keymap.of([
-            ...closeBracketsKeymap,
             ...defaultKeymap,
             ...historyKeymap,
             ...commentKeymap,
+            ...closeBracketsKeymap,
           ]),
           // 超出换行
           EditorView.lineWrapping,
@@ -102,25 +102,18 @@ class SMEditor {
 
         ],
       }),
+      parent: document.querySelector('.cm-container')
     });
-    $('.cm-container').append(this._cm.dom);
     const formEle = $('#text')[0].form;
     formEle && formEle.addEventListener('submit', () => $('#text').val(this._cm.state.doc.toString()));
   }
 
   /**
-   * 创建编辑器功能案件
+   * 创建编辑器功能
    * 
    */
-  handleCreateTools() {
-    menu.forEach(item => {
-      const el = $(`<div class="cm-menu-item" title="${item.title}">${item.innerHTML}</div>`);
-      el.on('click', () => {
-        switch (item.type) {
-        }
-      })
-      $('.cm-menu').append(el);
-    })
+  handleCreateMenu() {
+    new Menu(this._cm);
   }
 
   /**
@@ -128,10 +121,13 @@ class SMEditor {
    * 
    */
   handleInsertFile() {
-    if (!Typecho) return;
     Typecho.insertFileToEditor = (file, url, isImage) => {
-      const str = `${isImage ? '!' : ''}[${file}](${url})\n`;
-      console.log(str);
+      const head = this._cm.state.selection.main.head;
+      const line = this._cm.state.doc.lineAt(head);
+      const cursor = head - line.from;
+      const text = `${cursor ? '\n' : ''}${isImage ? '!' : ''}[${file}](${url})\n`;
+      this._cm.dispatch(this._cm.state.replaceSelection(text));
+      this._cm.focus();
     };
   }
 
@@ -172,7 +168,6 @@ class SMEditor {
       }
     };
     setInterval(saveFn, 5000);
-
   }
 }
 

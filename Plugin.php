@@ -66,6 +66,7 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
           autoSave: $autoSave,
         }
       </script>
+      <script src="https://cdn.jsdelivr.net/npm/hyperdown@2.4.28/Parser.min.js?version=$version"></script>
       <script src="$pluginUrl/assets/js/SMEditor.bundle.js?version=$version"></script>
 EOF;
   }

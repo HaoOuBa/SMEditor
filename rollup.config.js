@@ -1,7 +1,7 @@
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default {
-  input: './assets/js/SMEditor.js',
+  input: './assets/js/index.js',
   output: {
     file: './assets/js/SMEditor.bundle.js',
     format: 'iife',

@@ -23085,7 +23085,7 @@
         return null;
     }
 
-    var menu = [
+    var menus = [
       {
         type: 'undo',
         title: '撤销',
@@ -23097,35 +23097,118 @@
         innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="18" height="18"><path d="M946.8 420L651.9 125.1c-19.5-19.5-52.7-5.7-52.7 21.8v174c-79.3-1.8-501.8 14.9-532.3 569.6-.9 17.2 22.1 24.3 30.6 9.3C255 621 396.6 553.3 599.1 561.5v175.2c0 27.5 33.3 41.3 52.8 21.9l294.8-294.9c12.1-12.1 12.1-31.6.1-43.7z"/></svg>'
       },
       {
-        type: 'bold',
-        title: '加粗',
-        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="20" height="20"><path d="M341.333 469.333h192a106.667 106.667 0 1 0 0-213.333h-192v213.333zm426.667 192a192 192 0 0 1-192 192H256V170.667h277.333a192 192 0 0 1 138.923 324.522A191.915 191.915 0 0 1 768 661.333zM341.333 554.667V768H576a106.667 106.667 0 1 0 0-213.333H341.333z"/></svg>'
+        type: 'preview',
+        title: '预览/取消预览',
+        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="20" height="20"><path d="M832 128c70.692 0 128 57.308 128 128v512c0 70.692-57.308 128-128 128H192c-70.692 0-128-57.308-128-128V256c0-70.692 57.308-128 128-128h640zm0 72H192c-30.619 0-55.498 24.573-56 55.074V768c0 30.619 24.573 55.498 55.074 55.992L192 824h640c30.619 0 55.498-24.573 56-55.074V256c0-30.619-24.573-55.498-55.074-55.992L832 200zM693.031 450.127l.425.417 128 128c13.918 13.918 14.057 36.398.417 50.487l-.417.425-128 128c-14.059 14.059-36.853 14.059-50.912 0-13.918-13.918-14.057-36.398-.417-50.487l.417-.425L745.09 604 642.544 501.456c-13.918-13.918-14.057-36.398-.417-50.487l.417-.425c13.918-13.918 36.398-14.057 50.487-.417zM284 312c19.882 0 36 16.118 36 36s-16.118 36-36 36h-56c-19.882 0-36-16.118-36-36s16.118-36 36-36h56zm512 0c19.882 0 36 16.118 36 36s-16.118 36-36 36H420c-19.882 0-36-16.118-36-36s16.118-36 36-36h376z"/></svg>'
       },
       {
-        type: 'italic',
-        title: '倾斜',
-        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="20" height="20"><path d="M640 853.333H298.667V768h124.885l90.283-512H384v-85.333h341.333V256H600.448l-90.283 512H640z"/></svg>'
+        type: 'draft',
+        title: '保存草稿',
+        innerHTML: '<svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path d="M96 960a32 32 0 1 1 0-64h832a32 32 0 1 1 0 64H96zm632.96-625.152L593.088 199.104l-340.48 340.48L240 690.432l148.032-14.784 340.8-340.8zm45.184-45.248l45.248-45.248-135.744-135.744-45.248 45.248L774.144 289.6zm-45.12-226.176l135.808 135.808c31.232 31.232 24.832 65.408-.192 90.368L412.16 742.144l-247.168 24.448 20.864-250.688L638.336 63.36c25.024-24.96 59.456-31.168 90.688.064z"/></svg>'
       },
       {
-        type: 'delete',
-        title: '删除',
-        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="20" height="20"><path d="M731.904 597.333c9.813 22.016 14.763 46.507 14.763 73.387 0 57.259-22.358 102.059-67.03 134.272-44.757 32.213-106.496 48.341-185.301 48.341-69.973 0-139.221-16.256-207.787-48.81v-96.256c64.854 37.418 131.2 56.149 199.083 56.149 108.843 0 163.413-31.232 163.797-93.739a94.293 94.293 0 0 0-27.648-68.394l-5.12-4.992H128v-85.334h768v85.334H731.904zm-173.995-128H325.504a174.336 174.336 0 0 1-20.523-22.272c-18.432-23.808-27.648-52.565-27.648-86.442 0-52.736 19.883-97.579 59.606-134.528 39.808-36.95 101.29-55.424 184.533-55.424 62.763 0 122.837 13.994 180.139 41.984v91.818c-51.2-29.312-107.307-43.946-168.363-43.946-105.813 0-158.677 33.365-158.677 100.096 0 17.92 9.301 33.536 27.904 46.89 18.602 13.355 41.557 23.979 68.821 32 26.453 7.68 55.339 17.664 86.613 29.824z"/></svg>'
-      },
-      {
-        type: 'code-inline',
-        title: '行内代码',
-        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="20" height="20"><path d="M416.328 512.336a96 96 0 1 0 192 0 96 96 0 1 0-192 0zm-80 347.664c-12.288 0-24.568-6-33.944-17.992l-224-286.584c-18.744-23.984-18.744-62.856 0-86.84l224-286.592c18.744-23.976 49.136-23.976 67.88 0 18.744 23.984 18.744 62.864 0 86.848L180.208 512l190.056 243.168c18.744 23.968 18.744 62.856 0 86.832-9.368 12-21.648 18-33.936 18zm352 0c12.28 0 24.568-6 33.936-17.992l224-286.584c18.752-23.984 18.752-62.856 0-86.84l-224-286.592c-18.744-23.976-49.136-23.976-67.872 0-18.752 23.984-18.752 62.864 0 86.848L844.448 512 654.392 755.168c-18.752 23.968-18.752 62.856 0 86.832 9.376 12 21.656 18 33.936 18z"/></svg>'
+        type: 'publish',
+        title: '发布文章',
+        innerHTML: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="20" height="20"><path d="M128 554.667h768a42.667 42.667 0 0 0 0-85.334H128a42.667 42.667 0 0 0 0 85.334z"/><path d="M469.333 128v768a42.667 42.667 0 0 0 85.334 0V128a42.667 42.667 0 0 0-85.334 0z"/></svg>'
       },
     ];
 
+    class Menu {
+      constructor(cm) {
+        this._cm = cm;
+        this.handleCreateMenu();
+      }
+
+
+      /**
+       * 内部方法 - 编辑器聚焦
+       * 
+       */
+      $focus() {
+        this._cm.focus();
+      }
+
+      /**
+       * 创建编辑器功能
+       * 
+       */
+      handleCreateMenu() {
+        menus.forEach(item => {
+          const el = $(`<div class="cm-menu-item" title="${item.title}">${item.innerHTML}</div>`);
+          el.on('click', () => {
+            switch (item.type) {
+              case 'undo':
+                this.handleUndo();
+                break;
+              case 'redo':
+                this.handleRedo();
+                break;
+              case 'preview':
+                this.handlePreview(el);
+                break;
+              case 'draft':
+                this.handleDraft(el);
+                break;
+              case 'publish':
+                this.handlePublish(el);
+                break;
+            }
+          });
+          $('.cm-menu').append(el);
+        });
+      }
+
+      /**
+       * 菜单栏 - 撤销
+       * 
+       */
+      handleUndo() {
+        undo(this._cm);
+        this.$focus();
+      }
+
+      /**
+       * 菜单栏 - 重做
+       * 
+       */
+      handleRedo() {
+        redo(this._cm);
+        this.$focus();
+      }
+
+      /**
+       * 菜单栏 - 预览
+       * 
+       */
+      handlePreview(el) {
+        console.log(1);
+        el.toggleClass('active');
+      }
+
+      /**
+       * 菜单栏 - 发布
+       * 
+       */
+      handlePublish() {
+        $('#btn-submit').click();
+      }
+
+      /**
+       * 菜单栏 - 保存草稿
+       * 
+       */
+      handleDraft() {
+        $('#btn-save').click();
+      }
+    }
+
     class SMEditor {
       constructor() {
-        // 编辑器实例
         this._cm = null;
         this.handleViewPort();
         this.handleCreateDom();
         this.handleCreateEditor();
-        this.handleCreateTools();
+        this.handleCreateMenu();
         this.handleInsertFile();
         this.handleAutoSave();
       }
@@ -23147,6 +23230,7 @@
       <div class="cm-container">
         <div class="cm-autosave"></div>
         <div class="cm-menu"></div>
+        <div class="cm-preview"></div>
       </div>
     `);
       }
@@ -23187,10 +23271,10 @@
               }),
               // 按键映射
               keymap.of([
-                ...closeBracketsKeymap,
                 ...defaultKeymap,
                 ...historyKeymap,
                 ...commentKeymap,
+                ...closeBracketsKeymap,
               ]),
               // 超出换行
               EditorView.lineWrapping,
@@ -23207,25 +23291,18 @@
 
             ],
           }),
+          parent: document.querySelector('.cm-container')
         });
-        $('.cm-container').append(this._cm.dom);
         const formEle = $('#text')[0].form;
         formEle && formEle.addEventListener('submit', () => $('#text').val(this._cm.state.doc.toString()));
       }
 
       /**
-       * 创建编辑器功能案件
+       * 创建编辑器功能
        * 
        */
-      handleCreateTools() {
-        menu.forEach(item => {
-          const el = $(`<div class="cm-menu-item" title="${item.title}">${item.innerHTML}</div>`);
-          el.on('click', () => {
-            switch (item.type) {
-            }
-          });
-          $('.cm-menu').append(el);
-        });
+      handleCreateMenu() {
+        new Menu(this._cm);
       }
 
       /**
@@ -23233,10 +23310,13 @@
        * 
        */
       handleInsertFile() {
-        if (!Typecho) return;
         Typecho.insertFileToEditor = (file, url, isImage) => {
-          const str = `${isImage ? '!' : ''}[${file}](${url})\n`;
-          console.log(str);
+          const head = this._cm.state.selection.main.head;
+          const line = this._cm.state.doc.lineAt(head);
+          const cursor = head - line.from;
+          const text = `${cursor ? '\n' : ''}${isImage ? '!' : ''}[${file}](${url})\n`;
+          this._cm.dispatch(this._cm.state.replaceSelection(text));
+          this._cm.focus();
         };
       }
 
@@ -23277,7 +23357,6 @@
           }
         };
         setInterval(saveFn, 5000);
-
       }
     }
 
