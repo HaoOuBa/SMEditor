@@ -132,16 +132,6 @@ body.lock-scroll {
         .cm-line {
           padding: 0;
 
-          // 代码折叠样式
-          .cm-foldPlaceholder {
-            background-color: transparent;
-            border: none;
-            color: grey;
-            border-radius: 0;
-            margin: 0;
-            padding: 0 2px;
-          }
-
           // 选中匹配文本
           .cm-selectionMatch {
             background-color: rgba(87, 87, 87, 0.72);
@@ -188,27 +178,6 @@ body.lock-scroll {
             color: #c678dd;
             text-decoration: underline;
             text-underline-position: under;
-          }
-
-          // 注释
-          .cmt-comment {
-            color: #5c6370;
-            font-style: italic;
-          }
-
-          // 标签名称
-          .cmt-typeName {
-            color: #e06c75;
-          }
-
-          // 属性名
-          .cmt-propertyName {
-            color: #d19a66;
-          }
-
-          // 字符串
-          .cmt-string {
-            color: #98c379;
           }
 
           // 当前高亮行

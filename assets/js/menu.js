@@ -7,6 +7,23 @@ export default class Menu {
     this.handleCreateMenu();
   }
 
+  /**
+   * 内部方法 - 设置光标的位置
+   * 
+   */
+  $setCursor(anchor) {
+    this._cm.dispatch({ selection: { anchor } });
+  }
+
+  /**
+   * 内部方法 - 获取光标在当前行的位置
+   * 
+   */
+  $getLineCh() {
+    const head = this._cm.state.selection.main.head;
+    const line = this._cm.state.doc.lineAt(head);
+    return head - line.from;
+  }
 
   /**
    * 内部方法 - 编辑器聚焦
@@ -14,6 +31,22 @@ export default class Menu {
    */
   $focus() {
     this._cm.focus();
+  }
+
+  /**
+   * 内部方法 - 获取选中的文字
+   * 
+   */
+  $getSelection() {
+    return this._cm.state.sliceDoc(this._cm.state.selection.main.from, this._cm.state.selection.main.to);
+  }
+
+  /**
+   * 内部方法 - 插入&替换文字
+   * 
+   */
+  $replaceSelection(str) {
+    this._cm.dispatch(this._cm.state.replaceSelection(str));
   }
 
   /**
@@ -31,14 +64,17 @@ export default class Menu {
           case 'redo':
             this.handleRedo();
             break;
+          case 'bold':
+            this.handleBold();
+            break;
           case 'preview':
             this.handlePreview(el);
             break;
           case 'draft':
-            this.handleDraft(el);
+            this.handleDraft();
             break;
           case 'publish':
-            this.handlePublish(el);
+            this.handlePublish();
             break;
         }
       })
@@ -61,6 +97,18 @@ export default class Menu {
    */
   handleRedo() {
     redo(this._cm);
+    this.$focus();
+  }
+
+  /**
+   * 菜单栏 - 加粗
+   * 
+   */
+  handleBold() {
+    const cursor = this._cm.state.selection.main.head;
+    const selectionText = this.$getSelection();
+    this.$replaceSelection(` **${selectionText}** `);
+    if (selectionText === '') this.$setCursor(cursor + 3);
     this.$focus();
   }
 

@@ -55,26 +55,26 @@ class SMEditor {
       state: EditorState.create({
         doc: $('#text').val(),
         extensions: [
-          // 自定义类名样式
-          classHighlightStyle,
-          // 自动闭合括号
-          closeBrackets(),
-          // 匹配括号
-          bracketMatching(),
+          // 行号
+          lineNumbers(),
+          // 高亮当前行号
+          highlightActiveLineGutter(),
+          // 撤销回退历史
+          history(),
           // 高亮选择
           drawSelection(),
+          // 重新缩进
+          indentOnInput(),
+          // 自定义类名样式
+          classHighlightStyle,
+          // 匹配括号
+          bracketMatching(),
+          // 自动闭合括号
+          closeBrackets(),
           // 当前行高亮
           highlightActiveLine(),
           // 高亮匹配
           highlightSelectionMatches(),
-          // 行号
-          lineNumbers(),
-          // 撤销回退历史
-          history(),
-          // 高亮当前行号
-          highlightActiveLineGutter(),
-          // 重新缩进
-          indentOnInput(),
           // 高亮 markdown 语法
           markdown({
             base: markdownLanguage,
@@ -99,7 +99,6 @@ class SMEditor {
               const items = clipboardData.items;
             }
           })
-
         ],
       }),
       parent: document.querySelector('.cm-container')
