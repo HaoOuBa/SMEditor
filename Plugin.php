@@ -2,15 +2,13 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
 /**
- * A Markdown Editor For Typecho
+ * A Markdown Editor for Typecho
  * 
  * @package SMEditor
  * @author HaoOuBa
  * @version 1.0.0
  * @link //78.al
  */
-
-
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
@@ -55,19 +53,19 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
    */
   public static function SMEdit()
   {
-    $version = '1.0.0';
     $pluginUrl = Helper::options()->pluginUrl . '/SMEditor';
-    $autoSave = Helper::options()->autoSave;
-    echo
-    <<<EOF
-      <link rel="stylesheet" href="$pluginUrl/assets/css/SMEditor.bundle.css?version=$version" />
-      <script>
-        window.SMEditor = {
-          autoSave: $autoSave,
-        }
-      </script>
-      <script src="https://cdn.jsdelivr.net/npm/hyperdown@2.4.28/Parser.min.js?version=$version"></script>
-      <script src="$pluginUrl/assets/js/SMEditor.bundle.js?version=$version"></script>
-EOF;
+?>
+    <link rel="stylesheet" href="<?php echo $pluginUrl; ?>/assets/css/SMEditor.bundle.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-nord.min.css">
+    <script>
+      window.SMEditor = {
+        autoSave: <?php Helper::options()->autoSave(); ?>,
+        uploadUrl: '<?php Helper::security()->index('/action/upload'); ?>',
+      }
+    </script>
+    <script src="<?php echo $pluginUrl; ?>/assets/plugin/Prism/Prism.min.js"></script>
+    <script src="<?php echo $pluginUrl; ?>/assets/plugin/Parser/Parser.min.js"></script>
+    <script src="<?php echo $pluginUrl; ?>/assets/js/SMEditor.bundle.js"></script>
+<?php
   }
 }

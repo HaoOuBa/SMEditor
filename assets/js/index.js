@@ -11,11 +11,13 @@ import { defaultKeymap } from "@codemirror/commands";
 import { history, historyKeymap } from "@codemirror/history";
 import { commentKeymap } from "@codemirror/comment";
 import { indentOnInput } from "@codemirror/language";
+
 import Menu from './menu';
 
 class SMEditor {
   constructor() {
     this._cm = null;
+    this._isPasting = false;
     this.handleViewPort();
     this.handleCreateDom();
     this.handleCreateEditor();
@@ -25,20 +27,23 @@ class SMEditor {
   }
 
   /**
-   * 重写视口标签
-   * 
+   * @description: 重写视口标签
+   * @param {*}
+   * @return {*}
    */
   handleViewPort() {
     $('meta[name="viewport"]').attr('content', 'width=device-width, user-scalable=no, initial-scale=1.0, shrink-to-fit=no, viewport-fit=cover');
   }
 
   /**
-   * 创建 DOM 节点
-   * 
+   * @description: 创建 DOM 节点
+   * @param {*}
+   * @return {*}
    */
   handleCreateDom() {
     $('#text').before(`
       <div class="cm-container">
+        <div class="cm-progress"></div>
         <div class="cm-autosave"></div>
         <div class="cm-menu"></div>
         <div class="cm-preview"></div>
@@ -47,8 +52,9 @@ class SMEditor {
   }
 
   /**
-   * 创建编辑器实例
-   * 
+   * @description: 创建编辑器实例
+   * @param {*}
+   * @return {*}
    */
   handleCreateEditor() {
     this._cm = new EditorView({
@@ -91,12 +97,64 @@ class SMEditor {
           EditorView.lineWrapping,
           // dom 事件监听
           EditorView.domEventHandlers({
-            scroll: ({ target: { scrollTop } }) => {
-              scrollTop > 10 ? $('.cm-menu').addClass('active') : $('.cm-menu').removeClass('active');
-            },
-            paste: ({ clipboardData }) => {
+            paste: (e) => {
+              if (this._isPasting) return;
+              if (!e.clipboardData && !e.originalEvent && e.originalEvent.clipboardData) return;
+              const clipboardData = e.clipboardData || e.originalEvent.clipboardData;
               if (!clipboardData || !clipboardData.items || !clipboardData.items.length) return;
               const items = clipboardData.items;
+              let blob = null;
+              for (let i = 0; i < items.length; i++) {
+                if (items[i].type.indexOf('image') !== -1) {
+                  e.preventDefault();
+                  blob = items[i].getAsFile();
+                  break;
+                }
+              };
+              if (!blob) return;
+              let api = window.SMEditor.uploadUrl;
+              const cid = $('input[name="cid"]').val();
+              cid && (api = api + '&cid=' + cid);
+              const fileName = Date.now().toString(36) + '.png';
+              const formData = new FormData();
+              formData.append('name', fileName);
+              formData.append('file', blob, fileName);
+              this._isPasting = true;
+              $.ajax({
+                url: api,
+                method: 'post',
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: 'json',
+                xhr: () => {
+                  const xhr = $.ajaxSettings.xhr();
+                  if (!xhr.upload) return;
+                  xhr.upload.addEventListener(
+                    'progress',
+                    e => {
+                      let percent = (e.loaded / e.total) * 100;
+                      $('.cm-progress').css('transition', 'width 0.35s').width(percent + '%');
+                    },
+                    false
+                  );
+                  return xhr;
+                },
+                success: res => {
+                  $('.cm-progress').css('transition', '').width(0);
+                  const head = this._cm.state.selection.main.head;
+                  const line = this._cm.state.doc.lineAt(head);
+                  const cursor = head - line.from;
+                  const text = `${cursor ? '\n' : ''}![${res[1].title}](${res[0]})\n`;
+                  this._cm.dispatch(this._cm.state.replaceSelection(text));
+                  this._cm.focus();
+                  this._isPasting = false;
+                },
+                error: () => {
+                  $('.cm-progress').css('transition', '').width(0);
+                  this._isPasting = false;
+                }
+              });
             }
           })
         ],
@@ -108,16 +166,18 @@ class SMEditor {
   }
 
   /**
-   * 创建编辑器功能
-   * 
+   * @description: 创建编辑器功能
+   * @param {*}
+   * @return {*}
    */
   handleCreateMenu() {
     new Menu(this._cm);
   }
 
   /**
-   * 点击附件将地址追加到编辑器中
-   * 
+   * @description: 点击附件将地址追加到编辑器中
+   * @param {*}
+   * @return {*}
    */
   handleInsertFile() {
     Typecho.insertFileToEditor = (file, url, isImage) => {
@@ -131,8 +191,9 @@ class SMEditor {
   }
 
   /**
-   * 自动保存
-   * 
+   * @description: 自动保存
+   * @param {*}
+   * @return {*}
    */
   handleAutoSave() {
     if (window.SMEditor.autoSave !== 1) return;
