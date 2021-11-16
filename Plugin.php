@@ -53,19 +53,22 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
    */
   public static function SMEdit()
   {
-    $pluginUrl = Helper::options()->pluginUrl . '/SMEditor';
+    // true：走本地资源 false：走 cdn 资源
+    $isDev = false;
+    $cdnURL = '//cdn.jsdelivr.net/npm/typecho-editor';
+    $localURL = Helper::options()->pluginUrl . '/SMEditor';
 ?>
-    <link rel="stylesheet" href="<?php echo $pluginUrl; ?>/assets/css/SMEditor.bundle.css" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-nord.min.css">
+    <link rel="stylesheet" href="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/css/SMEditor.bundle.css" />
     <script>
       window.SMEditor = {
         autoSave: <?php Helper::options()->autoSave(); ?>,
         uploadUrl: '<?php Helper::security()->index('/action/upload'); ?>',
       }
     </script>
-    <script src="<?php echo $pluginUrl; ?>/assets/plugin/Prism/Prism.min.js"></script>
-    <script src="<?php echo $pluginUrl; ?>/assets/plugin/Parser/Parser.min.js"></script>
-    <script src="<?php echo $pluginUrl; ?>/assets/js/SMEditor.bundle.js"></script>
+    <script src="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/plugin/Prism/Prism.min.js"></script>
+    <script src="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/plugin/Parser/Parser.min.js"></script>
+    <script src="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/js/SMEditor.bundle.js"></script>
 <?php
   }
 }
