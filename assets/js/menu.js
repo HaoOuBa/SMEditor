@@ -25,8 +25,8 @@ export default class Menu {
    * @return {*}
    */
   $openModal(options) {
-    this._options = Object.assign(this._options, options);
-    const { title, innerHtml, hasFooter, callback } = this._options;
+    const newOptions = { ...this._options, ...options };
+    const { title, innerHtml, hasFooter, callback } = newOptions;
     $('.cm-modal__wrapper-head--text').html(title);
     $('.cm-modal__wrapper-body').html(innerHtml);
     $('.cm-modal__wrapper-foot').css('display', hasFooter ? '' : 'none')
