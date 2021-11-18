@@ -53,9 +53,9 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
    */
   public static function SMEdit()
   {
-    // true：走本地资源 false：走 cdn 资源
     $isDev = false;
-    $cdnURL = '//cdn.jsdelivr.net/npm/typecho-editor';
+    $version = '1.0.4';
+    $cdnURL = '//cdn.jsdelivr.net/npm/typecho-editor@' . $version;
     $localURL = Helper::options()->pluginUrl . '/SMEditor';
 ?>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-nord.min.css">

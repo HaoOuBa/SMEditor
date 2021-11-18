@@ -6,8 +6,7 @@ export default {
   output: {
     file: './assets/js/SMEditor.bundle.js',
     format: 'iife',
-    inlineDynamicImports: true,
-    minify: true,
+    inlineDynamicImports: true
   },
-  plugins: [nodeResolve(), terser({ compress: { drop_console: true } })],
+  plugins: process.env.NODE_ENV === 'development' ? [nodeResolve()] : [nodeResolve(), terser({ compress: { drop_console: true } })],
 };

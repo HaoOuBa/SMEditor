@@ -585,6 +585,78 @@ body.lock-scroll {
           padding: 5px;
         }
       }
+
+      .menu_head {
+        width: 100%;
+        overflow-x: auto;
+        display: flex;
+        margin-bottom: 20px;
+
+        &__item {
+          white-space: nowrap;
+          margin-right: 15px;
+          cursor: pointer;
+          user-select: none;
+
+          &:last-child {
+            margin-right: 0;
+          }
+
+          &.active {
+            color: #409eff;
+          }
+        }
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      .menu_content {
+        display: none;
+        grid-template-columns: repeat(6, 1fr);
+        font-size: 18px;
+        border-left: 1px solid #e4e7ed;
+        border-top: 1px solid #e4e7ed;
+        max-height: 350px;
+        overflow-y: auto;
+        overscroll-behavior: none;
+
+        &__item {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-right: 1px solid #e4e7ed;
+          border-bottom: 1px solid #e4e7ed;
+          cursor: pointer;
+          transition: background-color 0.25s;
+          user-select: none;
+          color: #888;
+          padding: 5px 0;
+
+          &:hover {
+            background: #e4e7ed;
+          }
+        }
+
+        &.active {
+          display: grid;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #fff;
+        }
+
+        &::-webkit-scrollbar {
+          width: 6px;
+          height: 6px;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          border-radius: 3px;
+          background: #c0c4cc;
+        }
+      }
     }
 
     &-foot {
