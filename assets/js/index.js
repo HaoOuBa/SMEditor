@@ -98,6 +98,8 @@ class SMEditor {
           // dom 事件监听
           EditorView.domEventHandlers({
             paste: (e) => {
+              // 若关闭了粘贴上传，则不做任何操作
+              if (!window.SMEditor.pasteUpload) return;
               if (this._isPasting) return;
               if (!e.clipboardData && !e.originalEvent && e.originalEvent.clipboardData) return;
               const clipboardData = e.clipboardData || e.originalEvent.clipboardData;

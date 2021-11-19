@@ -622,6 +622,10 @@ body.lock-scroll {
         overflow-y: auto;
         overscroll-behavior: none;
 
+        &[data-type="emoji"] {
+          font-family: "Apple Color Emoji", "Segoe UI Emoji", NotoColorEmoji, "Segoe UI Symbol", "Android Emoji", EmojiSymbols;
+        }
+
         &__item {
           display: flex;
           align-items: center;

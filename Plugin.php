@@ -54,7 +54,7 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
   public static function SMEdit()
   {
     $isDev = false;
-    $version = '1.0.5';
+    $version = '1.0.6';
     $cdnURL = '//cdn.jsdelivr.net/npm/typecho-editor@' . $version;
     $localURL = Helper::options()->pluginUrl . '/SMEditor';
 ?>
@@ -62,7 +62,11 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
     <link rel="stylesheet" href="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/css/SMEditor.bundle.css" />
     <script>
       window.SMEditor = {
+        // 是否开启粘贴上传
+        pasteUpload: true,
+        // 是否开启自动保存
         autoSave: <?php Helper::options()->autoSave(); ?>,
+        // 上传地址
         uploadUrl: '<?php Helper::security()->index('/action/upload'); ?>',
       }
     </script>

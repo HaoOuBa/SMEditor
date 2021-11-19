@@ -3,18 +3,12 @@ import menus from '../config/menus';
 import languages from '../config/languages';
 import create from './create';
 import typeface from '../config/typeface';
+import emoji from '../config/emoji';
 
 export default class Menu {
   constructor(cm) {
     this._cm = cm;
-    this._options = {
-      title: '提示',
-      innerHtml: '内容',
-      hasFooter: true,
-      cancel: () => { },
-      confirm: () => { },
-      callback: () => { },
-    };
+    this._options = null;
     this.handleCreateModal();
     this.handleCreateMenu();
   }
@@ -25,8 +19,16 @@ export default class Menu {
    * @return {*}
    */
   $openModal(options) {
-    const newOptions = { ...this._options, ...options };
-    const { title, innerHtml, hasFooter, callback } = newOptions;
+    const defaultOptions = {
+      title: '提示',
+      innerHtml: '内容',
+      hasFooter: true,
+      cancel: () => { },
+      confirm: () => { },
+      callback: () => { },
+    }
+    this._options = { ...defaultOptions, ...options };
+    const { title, innerHtml, hasFooter, callback } = this._options;
     $('.cm-modal__wrapper-head--text').html(title);
     $('.cm-modal__wrapper-body').html(innerHtml);
     $('.cm-modal__wrapper-foot').css('display', hasFooter ? '' : 'none')
@@ -197,6 +199,9 @@ export default class Menu {
               break;
             case 'typeface':
               this.handleTypeface();
+              break;
+            case 'emoji':
+              this.handleEmoji();
               break;
           }
         });
@@ -623,6 +628,7 @@ export default class Menu {
         </div>
       `,
       confirm: () => {
+        console.log(1111);
         const type = $(".cm-modal select[name='type']").val();
         if (!type) return;
         const htmlStr = `\`\`\`${type}\ncode here...\n\`\`\``;
@@ -656,10 +662,53 @@ export default class Menu {
     Object.keys(typeface).forEach((key, index) => {
       const list = typeface[key].split(' ');
       menuHtml += `<div class="menu_head__item ${!index ? 'active' : ''}" data-key="${key}">${key}</div>`;
-      contentHtml += `<div class="menu_content ${!index ? 'active' : ''}" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
+      contentHtml += `<div data-type="typeface" class="menu_content ${!index ? 'active' : ''}" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
     })
     this.$openModal({
       title: '字体符号',
+      hasFooter: false,
+      innerHtml: `<div class="menu_head">${menuHtml}</div>${contentHtml}`,
+      callback: () => {
+        const _this = this;
+        // 切换事件
+        $(".cm-modal__wrapper-body .menu_head__item").on('click', function () {
+          const key = $(this).attr('data-key');
+          const menuHead = $('.cm-modal__wrapper-body .menu_head');
+          const activeMenu = $(`.cm-modal__wrapper-body .menu_head__item[data-key="${key}"]`);
+          const activeContent = $(`.cm-modal__wrapper-body .menu_content[data-key="${key}"]`);
+          activeMenu.addClass('active').siblings().removeClass('active');
+          activeContent.addClass('active').siblings().removeClass('active');
+          menuHead[0].scrollTo({
+            left: activeMenu[0].offsetLeft - menuHead[0].offsetWidth / 2 + activeMenu[0].offsetWidth / 2 - 15,
+            behavior: "smooth",
+          });
+        })
+        // 点击事件
+        $('.cm-modal__wrapper-body .menu_content__item').on('click', function () {
+          const text = $(this).html();
+          $('.cm-modal').removeClass('active');
+          _this.$replaceSelection(` ${text} `);
+          _this.$focus();
+        });
+      }
+    });
+  }
+
+  /**
+   * @description: 菜单栏 - emoji表情
+   * @param {*}
+   * @return {*}
+   */
+  handleEmoji() {
+    let menuHtml = '';
+    let contentHtml = '';
+    Object.keys(emoji).forEach((key, index) => {
+      const list = emoji[key].split(' ');
+      menuHtml += `<div class="menu_head__item ${!index ? 'active' : ''}" data-key="${key}">${key}</div>`;
+      contentHtml += `<div data-type="emoji" class="menu_content ${!index ? 'active' : ''}" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
+    })
+    this.$openModal({
+      title: 'emoji表情（需数据库支持）',
       hasFooter: false,
       innerHtml: `<div class="menu_head">${menuHtml}</div>${contentHtml}`,
       callback: () => {
