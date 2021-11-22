@@ -123,6 +123,11 @@ export default class Menu {
       this._options.confirm();
       $('.cm-modal').removeClass('active');
     });
+    $(document).on('keyup', e => {
+      if (e.key !== 'Escape') return;
+      $('body').removeClass('lock-scroll');
+      $('.cm-modal').removeClass('active');
+    })
   }
 
   /**
@@ -628,14 +633,18 @@ export default class Menu {
         </div>
       `,
       confirm: () => {
-        console.log(1111);
-        const type = $(".cm-modal select[name='type']").val();
+        const type = $(`.cm-modal select[name="type"]`).val();
         if (!type) return;
         const htmlStr = `\`\`\`${type}\ncode here...\n\`\`\``;
         if (this.$getLineCh()) this.$replaceSelection('\n\n' + htmlStr);
         else this.$replaceSelection(htmlStr);
         this.$focus();
-        sessionStorage.setItem('selectType', type);
+        sessionStorage.setItem('sessionStorageCode', type);
+      },
+      callback: () => {
+        const sessionStorageCode = sessionStorage.getItem('sessionStorageCode');
+        if (!sessionStorageCode) return;
+        $(`.cm-modal select[name="type"] option[value="${sessionStorageCode}"]`).attr('selected', true);
       }
     })
   }
@@ -659,10 +668,10 @@ export default class Menu {
   handleTypeface() {
     let menuHtml = '';
     let contentHtml = '';
-    Object.keys(typeface).forEach((key, index) => {
+    Object.keys(typeface).forEach(key => {
       const list = typeface[key].split(' ');
-      menuHtml += `<div class="menu_head__item ${!index ? 'active' : ''}" data-key="${key}">${key}</div>`;
-      contentHtml += `<div data-type="typeface" class="menu_content ${!index ? 'active' : ''}" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
+      menuHtml += `<div class="menu_head__item" data-key="${key}">${key}</div>`;
+      contentHtml += `<div data-type="typeface" class="menu_content" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
     })
     this.$openModal({
       title: '字体符号',
@@ -670,26 +679,42 @@ export default class Menu {
       innerHtml: `<div class="menu_head">${menuHtml}</div>${contentHtml}`,
       callback: () => {
         const _this = this;
+        const menuHead = $('.cm-modal .menu_head');
+        // 点击事件
+        $('.cm-modal .menu_content__item').on('click', function () {
+          const text = $(this).html();
+          $('.cm-modal').removeClass('active');
+          _this.$replaceSelection(` ${text} `);
+          _this.$focus();
+        });
         // 切换事件
-        $(".cm-modal__wrapper-body .menu_head__item").on('click', function () {
+        $(".cm-modal .menu_head__item").on('click', function () {
           const key = $(this).attr('data-key');
-          const menuHead = $('.cm-modal__wrapper-body .menu_head');
-          const activeMenu = $(`.cm-modal__wrapper-body .menu_head__item[data-key="${key}"]`);
-          const activeContent = $(`.cm-modal__wrapper-body .menu_content[data-key="${key}"]`);
+          const activeMenu = $(`.cm-modal .menu_head__item[data-key="${key}"]`);
+          const activeContent = $(`.cm-modal .menu_content[data-key="${key}"]`);
           activeMenu.addClass('active').siblings().removeClass('active');
           activeContent.addClass('active').siblings().removeClass('active');
           menuHead[0].scrollTo({
             left: activeMenu[0].offsetLeft - menuHead[0].offsetWidth / 2 + activeMenu[0].offsetWidth / 2 - 15,
             behavior: "smooth",
           });
+          sessionStorage.setItem('sessionStorageTypeface', key);
         })
-        // 点击事件
-        $('.cm-modal__wrapper-body .menu_content__item').on('click', function () {
-          const text = $(this).html();
-          $('.cm-modal').removeClass('active');
-          _this.$replaceSelection(` ${text} `);
-          _this.$focus();
-        });
+        // 进入时激活高亮选项
+        const sessionStorageTypeface = sessionStorage.getItem('sessionStorageTypeface')
+        if (sessionStorageTypeface) {
+          const activeMenu = $(`.cm-modal .menu_head__item[data-key="${sessionStorageTypeface}"]`);
+          const activeContent = $(`.cm-modal .menu_content[data-key="${sessionStorageTypeface}"]`);
+          activeMenu.addClass('active').siblings().removeClass('active');
+          activeContent.addClass('active').siblings().removeClass('active');
+          menuHead[0].scrollTo({
+            left: activeMenu[0].offsetLeft - menuHead[0].offsetWidth / 2 + activeMenu[0].offsetWidth / 2 - 15,
+            behavior: "smooth",
+          });
+        } else {
+          $(`.cm-modal .menu_head__item`).eq(0).addClass('active').siblings().removeClass('active');
+          $(`.cm-modal .menu_content`).eq(0).addClass('active').siblings().removeClass('active');
+        }
       }
     });
   }
@@ -702,10 +727,10 @@ export default class Menu {
   handleEmoji() {
     let menuHtml = '';
     let contentHtml = '';
-    Object.keys(emoji).forEach((key, index) => {
+    Object.keys(emoji).forEach((key) => {
       const list = emoji[key].split(' ');
-      menuHtml += `<div class="menu_head__item ${!index ? 'active' : ''}" data-key="${key}">${key}</div>`;
-      contentHtml += `<div data-type="emoji" class="menu_content ${!index ? 'active' : ''}" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
+      menuHtml += `<div class="menu_head__item" data-key="${key}">${key}</div>`;
+      contentHtml += `<div data-type="emoji" class="menu_content" data-key="${key}">${list.map(item => `<div class="menu_content__item">${item}</div>`).join(' ')}</div>`;
     })
     this.$openModal({
       title: 'emoji表情（需数据库支持）',
@@ -713,26 +738,42 @@ export default class Menu {
       innerHtml: `<div class="menu_head">${menuHtml}</div>${contentHtml}`,
       callback: () => {
         const _this = this;
+        const menuHead = $('.cm-modal .menu_head');
+        // 点击事件
+        $('.cm-modal .menu_content__item').on('click', function () {
+          const text = $(this).html();
+          $('.cm-modal').removeClass('active');
+          _this.$replaceSelection(` ${text} `);
+          _this.$focus();
+        });
         // 切换事件
-        $(".cm-modal__wrapper-body .menu_head__item").on('click', function () {
+        $(".cm-modal .menu_head__item").on('click', function () {
           const key = $(this).attr('data-key');
-          const menuHead = $('.cm-modal__wrapper-body .menu_head');
-          const activeMenu = $(`.cm-modal__wrapper-body .menu_head__item[data-key="${key}"]`);
-          const activeContent = $(`.cm-modal__wrapper-body .menu_content[data-key="${key}"]`);
+          const activeMenu = $(`.cm-modal .menu_head__item[data-key="${key}"]`);
+          const activeContent = $(`.cm-modal .menu_content[data-key="${key}"]`);
           activeMenu.addClass('active').siblings().removeClass('active');
           activeContent.addClass('active').siblings().removeClass('active');
           menuHead[0].scrollTo({
             left: activeMenu[0].offsetLeft - menuHead[0].offsetWidth / 2 + activeMenu[0].offsetWidth / 2 - 15,
             behavior: "smooth",
           });
+          sessionStorage.setItem('sessionStorageEmoji', key);
         })
-        // 点击事件
-        $('.cm-modal__wrapper-body .menu_content__item').on('click', function () {
-          const text = $(this).html();
-          $('.cm-modal').removeClass('active');
-          _this.$replaceSelection(` ${text} `);
-          _this.$focus();
-        });
+        // 进入时激活高亮选项
+        const sessionStorageEmoji = sessionStorage.getItem('sessionStorageEmoji')
+        if (sessionStorageEmoji) {
+          const activeMenu = $(`.cm-modal .menu_head__item[data-key="${sessionStorageEmoji}"]`);
+          const activeContent = $(`.cm-modal .menu_content[data-key="${sessionStorageEmoji}"]`);
+          activeMenu.addClass('active').siblings().removeClass('active');
+          activeContent.addClass('active').siblings().removeClass('active');
+          menuHead[0].scrollTo({
+            left: activeMenu[0].offsetLeft - menuHead[0].offsetWidth / 2 + activeMenu[0].offsetWidth / 2 - 15,
+            behavior: "smooth",
+          });
+        } else {
+          $(`.cm-modal .menu_head__item`).eq(0).addClass('active').siblings().removeClass('active');
+          $(`.cm-modal .menu_content`).eq(0).addClass('active').siblings().removeClass('active');
+        }
       }
     });
   }

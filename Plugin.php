@@ -54,7 +54,7 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
   public static function SMEdit()
   {
     $isDev = false;
-    $version = '1.0.6';
+    $version = '1.0.8';
     $cdnURL = '//cdn.jsdelivr.net/npm/typecho-editor@' . $version;
     $localURL = Helper::options()->pluginUrl . '/SMEditor';
 ?>
