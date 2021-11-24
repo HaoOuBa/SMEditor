@@ -1,6 +1,6 @@
 {
   "name": "typecho-editor",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A Markdown Editor for Typecho",
   "keywords": [
     "SMEditor",
@@ -23,14 +23,14 @@
     "@codemirror/lang-markdown": "^0.19.2",
     "@codemirror/language-data": "^0.19.1",
     "@codemirror/matchbrackets": "^0.19.3",
-    "@codemirror/search": "^0.19.2",
-    "@codemirror/state": "^0.19.5",
-    "@codemirror/view": "^0.19.16"
+    "@codemirror/search": "^0.19.3",
+    "@codemirror/state": "^0.19.6",
+    "@codemirror/view": "^0.19.20"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^13.0.6",
     "cross-env": "^7.0.3",
-    "rollup": "^2.60.0",
+    "rollup": "^2.60.1",
     "rollup-plugin-terser": "^7.0.2"
   }
 }

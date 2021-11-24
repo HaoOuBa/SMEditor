@@ -12,6 +12,37 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
+  public static $isDev = false;
+  public static $version = '1.0.9';
+
+  /**
+   * 静态资源URL
+   * 
+   */
+  public static function _getAssetsUrl($echo = true)
+  {
+    $localUrl = Helper::options()->pluginUrl . '/SMEditor';
+    $remoteUrl = '//cdn.jsdelivr.net/npm/typecho-editor@' . self::$version;
+    if ($echo) echo self::$isDev ? $localUrl : $remoteUrl;
+    else return self::$isDev ? $localUrl : $remoteUrl;
+  }
+
+  /**
+   * 解析表情
+   * 
+   */
+  public static function _parseEmotion($text)
+  {
+    return preg_replace_callback(
+      '/\[\/([A-Z]{1}):([^\]]+)\]/',
+      function ($match) {
+        $emotionAssetsURL = self::_getAssetsUrl(false) . '/assets/img';
+        return "<img class='sm-emotion' src='{$emotionAssetsURL}/{$match[1]}/{$match[2]}.png' />";
+      },
+      $text
+    );
+  }
+
   /**
    * 激活插件方法,如果激活失败,直接抛出异常
    * 
@@ -20,6 +51,7 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
   {
     Typecho_Plugin::factory('admin/write-post.php')->richEditor = array('SMEditor_Plugin', 'SMEdit');
     Typecho_Plugin::factory('admin/write-page.php')->richEditor = array('SMEditor_Plugin', 'SMEdit');
+    Typecho_Plugin::factory('Widget_Abstract_Contents')->content = array('SMEditor_Plugin', 'SMContent');
   }
 
   /**
@@ -48,18 +80,24 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
   }
 
   /**
+   * 解析文章
+   * 
+   */
+  public static function SMContent($text, $context)
+  {
+    return self::_parseEmotion($text);
+  }
+
+  /**
    * 注入函数
    * 
    */
   public static function SMEdit()
   {
-    $isDev = false;
-    $version = '1.0.8';
-    $cdnURL = '//cdn.jsdelivr.net/npm/typecho-editor@' . $version;
-    $localURL = Helper::options()->pluginUrl . '/SMEditor';
+
 ?>
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/prism-themes@1.7.0/themes/prism-nord.min.css">
-    <link rel="stylesheet" href="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/css/SMEditor.bundle.css" />
+    <link rel="stylesheet" href="<?php self::_getAssetsUrl(); ?>/assets/plugin/Prism/Prism.min.css">
+    <link rel="stylesheet" href="<?php self::_getAssetsUrl(); ?>/assets/css/SMEditor.bundle.css" />
     <script>
       window.SMEditor = {
         // 是否开启粘贴上传
@@ -68,11 +106,13 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
         autoSave: <?php Helper::options()->autoSave(); ?>,
         // 上传地址
         uploadUrl: '<?php Helper::security()->index('/action/upload'); ?>',
+        // 静态资源
+        assetsURL: '<?php self::_getAssetsUrl(); ?>',
       }
     </script>
-    <script src="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/plugin/Prism/Prism.min.js"></script>
-    <script src="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/plugin/Parser/Parser.min.js"></script>
-    <script src="<?php echo $isDev ? $localURL : $cdnURL; ?>/assets/js/SMEditor.bundle.js"></script>
+    <script src="<?php self::_getAssetsUrl(); ?>/assets/plugin/Prism/Prism.min.js"></script>
+    <script src="<?php self::_getAssetsUrl(); ?>/assets/plugin/Parser/Parser.min.js"></script>
+    <script src="<?php self::_getAssetsUrl(); ?>/assets/js/SMEditor.bundle.js"></script>
 <?php
   }
 }
