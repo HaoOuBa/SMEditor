@@ -97,6 +97,22 @@ export default class Menu {
           $(`.cm-modal .menu_head__item`).eq(0).addClass('active').siblings().removeClass('active');
           $(`.cm-modal .menu_content`).eq(0).addClass('active').siblings().removeClass('active');
         }
+
+        // 设置懒加载功能
+        const lazyLoadImgs = document.querySelectorAll('.cm-modal .menu_content__item .sm-emotion');
+        if (!lazyLoadImgs) return;
+        if (IntersectionObserver) {
+          const observer = new IntersectionObserver((changes) => {
+            changes.forEach(change => {
+              if (!change.isIntersecting) return;
+              change.target.src = change.target.getAttribute('data-src');
+              observer.unobserve(change.target);
+            })
+          });
+          lazyLoadImgs.forEach(item => observer.observe(item));
+        } else {
+          lazyLoadImgs.forEach(item => (item.src = item.getAttribute('data-src')));
+        }
       }
     });
   }

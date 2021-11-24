@@ -13,7 +13,7 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
   public static $isDev = false;
-  public static $version = '1.0.9';
+  public static $version = '1.1.0';
 
   /**
    * 静态资源URL
