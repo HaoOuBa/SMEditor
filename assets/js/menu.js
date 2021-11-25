@@ -39,13 +39,27 @@ export default class Menu {
   }
 
   /**
- * @description: 内部方法 - 统一的滚动栏
- * @param {*} options
- * @param {*} type
- * @param {*} title
- * @param {*} sessionStorageKey
- * @return {*}
- */
+   * @description: 内部方法 - 同步加载图片
+   * @param {*} src
+   * @return {*}
+   */
+  $loadImage(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = src;
+      img.onload = () => setTimeout(() => resolve(true), 320);
+      img.onerror = () => resolve(false);
+    })
+  }
+
+  /**
+   * @description: 内部方法 - 统一的滚动栏
+   * @param {*} options
+   * @param {*} type
+   * @param {*} title
+   * @param {*} sessionStorageKey
+   * @return {*}
+   */
   $createMenuModal(options, type, title, sessionStorageKey) {
     let menuHtml = '';
     let contentHtml = '';
@@ -103,9 +117,10 @@ export default class Menu {
         if (!lazyLoadImgs) return;
         if (IntersectionObserver) {
           const observer = new IntersectionObserver((changes) => {
-            changes.forEach(change => {
+            changes.forEach(async change => {
               if (!change.isIntersecting) return;
-              change.target.src = change.target.getAttribute('data-src');
+              const loaded = await this.$loadImage(change.target.getAttribute('data-src'));
+              loaded && (change.target.src = change.target.getAttribute('data-src'));
               observer.unobserve(change.target);
             })
           });
