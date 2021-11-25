@@ -6,14 +6,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package SMEditor
  * @author HaoOuBa
- * @version 1.2.1
+ * @version 1.2.2
  * @link //78.al
  */
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
   public static $isDev = false;
-  public static $version = '1.2.1';
+  public static $version = '1.2.2';
 
   /**
    * 静态资源URL
@@ -85,7 +85,8 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
    */
   public static function SMContent($text, $context)
   {
-    return self::_parseEmotion($text);
+    $text = self::_parseEmotion($text);
+    return $context->isMarkdown ? $context->markdown($text) : $context->autoP($text);
   }
 
   /**
