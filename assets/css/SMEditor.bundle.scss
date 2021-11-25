@@ -20,7 +20,7 @@ body.lock-scroll {
     left: 0;
     height: 4px;
     background-image: linear-gradient(to right, #4cd964, #5ac8fa, #007aff, #34aadc, #5856d6, #ff2d55);
-    z-index: 750;
+    z-index: 520000;
     border-radius: 0 4px 4px 0;
   }
 
@@ -32,7 +32,7 @@ body.lock-scroll {
       content: "";
       position: absolute;
       top: 0;
-      z-index: 500;
+      z-index: 520000;
       pointer-events: none;
       height: 3px;
       width: 0;
@@ -87,7 +87,7 @@ body.lock-scroll {
         position: absolute;
         top: 40px;
         left: 50%;
-        z-index: 750;
+        z-index: 520000;
         background: #353B45;
         padding: 5px 0;
         border-radius: 4px;
@@ -159,7 +159,7 @@ body.lock-scroll {
       right: 0;
       height: 6px;
       bottom: -6px;
-      z-index: 250;
+      z-index: 510000;
       box-shadow: #000 0 6px 6px -6px inset;
       pointer-events: none;
     }
@@ -504,7 +504,7 @@ body.lock-scroll {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 999;
+    z-index: 520999;
   }
 }
 
@@ -517,7 +517,7 @@ body.lock-scroll {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: 5201314;
   background-color: rgba(0, 0, 0, 0);
   visibility: hidden;
   transition: background-color 0.25s, visibility 0.25s;
