@@ -111,10 +111,8 @@ export default class Menu {
           $(`.cm-modal .menu_head__item`).eq(0).addClass('active').siblings().removeClass('active');
           $(`.cm-modal .menu_content`).eq(0).addClass('active').siblings().removeClass('active');
         }
-
         // 设置懒加载功能
-        const lazyLoadImgs = document.querySelectorAll('.cm-modal .menu_content__item .sm-emotion');
-        if (!lazyLoadImgs) return;
+        const lazyLoadImgs = document.querySelectorAll(`.cm-modal .menu_content[data-type="emotion"] .sm-emotion`);
         if (IntersectionObserver) {
           const observer = new IntersectionObserver((changes) => {
             changes.forEach(async change => {
