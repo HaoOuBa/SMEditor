@@ -1,25 +1,47 @@
 /**
- * @description: 将 base64 转换成文件流
- * @param {*}
+ * @description: 绘制文字水印
+ * @param {*} context
+ * @param {*} width
+ * @param {*} height
  * @return {*}
  */
-export const dataURLtoFile = (dataURL, filename) => {
-  const arr = dataURL.split(',');
-  const mime = arr[0].match(/:(.*?);/)[1];
-  const bstr = window.atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  while (n--) (u8arr[n] = bstr.charCodeAt(n));
-  return new File([u8arr], filename, { type: mime });
+export const createWatermark = (context, width, height) => {
+  const watermarkText = localStorage.getItem('watermarkText') || '';
+  const watermarkColor = localStorage.getItem('watermarkColor') || '#000000';
+  const watermarkPosition = localStorage.getItem('watermarkPosition') || '0';
+  if (!watermarkText) return;
+  context.font = "14px 宋体";
+  context.fillStyle = watermarkColor;
+  switch (watermarkPosition) {
+    case "0":
+      context.textBaseline = "top";
+      context.textAlign = 'left';
+      context.fillText(watermarkText, 10, 10);
+      break;
+    case "1":
+      context.textBaseline = "bottom";
+      context.textAlign = 'left';
+      context.fillText(watermarkText, 10, height - 10);
+      break;
+    case "2":
+      context.textAlign = 'right';
+      context.textBaseline = "top";
+      context.fillText(watermarkText, width - 10, 10);
+      break;
+    case "3":
+      context.textAlign = 'right';
+      context.textBaseline = "bottom";
+      context.fillText(watermarkText, width - 10, height - 10);
+      break;
+  }
 }
 
 /**
  * @description: 压缩图片
  * @param {*} file 文件流
- * @param {*} compressionRatio 压缩比例
  * @return {*}
  */
-export const compressImg = (file, compressionRatio = 1, watermarkText = '牛逼') => {
+export const compressImg = file => {
   const reader = new FileReader();
   reader.readAsDataURL(file);
   return new Promise((resolve) => {
@@ -34,23 +56,8 @@ export const compressImg = (file, compressionRatio = 1, watermarkText = '牛逼'
         canvas.setAttribute('width', width);
         canvas.setAttribute('height', height);
         ctx.drawImage(image, 0, 0, width, height);
-        if (watermarkText) {
-          ctx.font = "24px 宋体";
-          ctx.fillStyle = "#FFC82C";
-          ctx.fillText(watermarkText, canvas.width - 48, canvas.height - 20);
-        }
-        document.body.appendChild(canvas);
-        // canvas.toBlob(blob => {
-        //   let _reader = new FileReader()
-        //   _reader.addEventListener('load', () => {
-        //     let img = new Image()
-        //     img.src = reader.result
-        //     img.addEventListener('load', () => {
-        //       document.body.appendChild(img)
-        //     })
-        //   })
-        //   _reader.readAsDataURL(blob)
-        // }, file.type, compressionRatio)
+        createWatermark(ctx, width, height);
+        canvas.toBlob(blob => resolve(new window.File([blob], file.name, { type: file.type })), file.type, localStorage.getItem('compressionRatio') || 1);
       };
     };
   });
@@ -62,5 +69,27 @@ export const compressImg = (file, compressionRatio = 1, watermarkText = '牛逼'
  * @return {*}
  */
 export const upload = (file) => {
-  console.log('上传文件');
+  let api = window.SMEditor.uploadUrl;
+  const cid = $('input[name="cid"]').val();
+  cid && (api = api + '&cid=' + cid);
+  const formData = new FormData();
+  formData.append('file', file);
+  $.ajax({
+    url: api,
+    method: 'post',
+    data: formData,
+    contentType: false,
+    processData: false,
+    dataType: 'json',
+    success: res => {
+      if (!res) return;
+      const { title, isImage, url } = res[1];
+      $(`.cm-modal .upload_list`).append(`
+        <div class="upload_list__item" data-title="${title}" data-isImage="${isImage}" data-url="${url}">
+          <div class="upload_list__item--icon"></div>
+          <div class="upload_list__item--text">${title}</div>
+        </div>
+      `)
+    },
+  });
 }

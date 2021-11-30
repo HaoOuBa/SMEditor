@@ -6,14 +6,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package SMEditor
  * @author HaoOuBa
- * @version 1.2.6
+ * @version 1.2.7
  * @link //78.al
  */
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
   public static $isDev = false;
-  public static $version = '1.2.6';
+  public static $version = '1.2.7';
 
   /**
    * 静态资源URL
@@ -103,8 +103,6 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
       window.SMEditor = {
         // 是否开启粘贴上传
         pasteUpload: true,
-        // 图片压缩比例 0 - 1
-        compressionRatio: 1,
         // 是否开启自动保存
         autoSave: <?php Helper::options()->autoSave(); ?>,
         // 上传地址

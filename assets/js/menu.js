@@ -328,6 +328,9 @@ export default class Menu {
             case 'full-screen':
               this.handleFullScreen(el);
               break;
+            case 'setting':
+              this.handleSetting();
+              break;
           }
         }
       });
@@ -628,11 +631,11 @@ export default class Menu {
       innerHtml: `
         <div class="fitem required">
           <label>链接标题</label>
-          <input autocomplete="off" name="title" placeholder="请输入链接标题"/>
+          <input type="text" autocomplete="off" name="title" placeholder="请输入链接标题"/>
         </div>
         <div class="fitem required">
           <label>链接地址</label>
-          <input autocomplete="off" name="url" placeholder="请输入链接地址"/>
+          <input type="text" autocomplete="off" name="url" placeholder="请输入链接地址"/>
         </div>
       `,
       confirm: () => {
@@ -655,11 +658,11 @@ export default class Menu {
       innerHtml: `
         <div class="fitem required">
           <label>图片名称</label>
-          <input autocomplete="off" name="title" placeholder="请输入图片名称"/>
+          <input type="text" autocomplete="off" name="title" placeholder="请输入图片名称"/>
         </div>
         <div class="fitem required">
           <label>图片地址</label>
-          <input autocomplete="off" name="url" placeholder="请输入图片地址"/>
+          <input type="text" autocomplete="off" name="url" placeholder="请输入图片地址"/>
         </div>
       `,
       confirm: () => {
@@ -682,9 +685,9 @@ export default class Menu {
       innerHtml: `
         <div class="fitem">
           <label>表格行</label>
-          <input style="width: 50px; flex: none; margin-right: 10px;" value="3" autocomplete="off" name="row"/>
+          <input type="text" style="width: 50px; flex: none; margin-right: 10px;" value="3" autocomplete="off" name="row"/>
           <label>表格列</label>
-          <input style="width: 50px; flex: none;" value="3" autocomplete="off" name="column"/>
+          <input type="text" style="width: 50px; flex: none;" value="3" autocomplete="off" name="column"/>
         </div>
       `,
       confirm: () => {
@@ -723,8 +726,8 @@ export default class Menu {
         <div class="fitem">
           <label>语言类型</label>
           <select name="type">
-              <option value="">- 请选择语言类型 -</option>
-              ${languages}
+            <option value="">- 请选择语言类型 -</option>
+            ${languages}
           </select>
         </div>
       `,
@@ -790,21 +793,27 @@ export default class Menu {
    */
   handleUpload() {
     this.$openModal({
-      title: '上传附件',
+      title: '上传附件（水印配置详见设置）',
       innerHtml: `
         <div class="upload_dragger">
           <div class="upload_dragger__icon"></div>
           <div class="upload_dragger__text">将文件拖拽至此处或点击上传</div>
           <input class="upload_dragger__input" type="file" multiple />
         </div>
-        <div class="upload_list">
-          <div class="upload_list__item">
-
-          </div>
-        </div>
+        <div class="upload_list"></div>
       `,
       confirm: () => {
-
+        let str = '';
+        $('.upload_list__item').each((index, item) => {
+          if (item.getAttribute('data-isImage') === "true") {
+            str += `![${item.getAttribute('data-title')}](${item.getAttribute('data-url')})`;
+          } else {
+            str += `[${item.getAttribute('data-title')}](${item.getAttribute('data-url')})`;
+          }
+          str += '\n';
+        })
+        this.$replaceSelection(this.$getLineCh() ? '\n' : '' + str);
+        this.$focus();
       },
       callback: () => {
         $(`.cm-modal input[type="file"]`).on('change', e => {
@@ -816,8 +825,85 @@ export default class Menu {
             // 如果不是图片文件类型，直接调用上传
             if (type.indexOf('image') === -1) return upload(file);
             // 如果是图片类型，则先处理图片，处理完后进行上传
-            compressImg(file, window.SMEditor.compressionRatio);
+            compressImg(file, window.SMEditor.compressionRatio).then(file => upload(file));
           })
+        })
+      }
+    })
+  }
+
+  /**
+   * @description: 菜单栏 - 设置
+   * @param {*}
+   * @return {*}
+   */
+  handleSetting() {
+    this.$openModal({
+      title: '设置',
+      hasFooter: false,
+      innerHtml: `
+        <div class="fitem">
+          <label>图片水印颜色</label>
+          <input name="watermarkColor" type="color" />
+        </div>
+        <div class="fitem">
+          <label>图片水印文字</label>
+          <input name="watermarkText" type="text" placeholder="请输入水印文字" maxlength="5" />
+        </div>
+        <div class="fitem">
+          <label>图片水印位置</label>
+          <select name="watermarkPosition">
+            <option value="">- 请选择水印位置 -</option>
+            <option value="0">左上方</option>
+            <option value="1">左下方</option>
+            <option value="2">右上方</option>
+            <option value="3">右下方</option>
+          </select>
+        </div>
+        <div class="fitem">
+          <label>图片压缩比率</label>
+          <select name="compressionRatio">
+            <option value="">- 请选择压缩比率 -</option>
+            <option value="1">不压缩</option>
+            <option value="0.9">压缩率 10%</option>
+            <option value="0.8">压缩率 20%</option>
+            <option value="0.7">压缩率 30%</option>
+            <option value="0.6">压缩率 40%</option>
+            <option value="0.5">压缩率 50%</option>
+            <option value="0.4">压缩率 60%</option>
+            <option value="0.3">压缩率 70%</option>
+            <option value="0.2">压缩率 80%</option>
+            <option value="0.1">压缩率 90%</option>
+          </select>
+        </div>
+      `,
+      callback: () => {
+        const watermarkColor = localStorage.getItem('watermarkColor');
+        watermarkColor && $(`.cm-modal input[name="watermarkColor"]`).val(watermarkColor);
+
+        const watermarkText = localStorage.getItem('watermarkText');
+        watermarkText && $(`.cm-modal input[name="watermarkText"]`).val(watermarkText);
+
+        const watermarkPosition = localStorage.getItem('watermarkPosition');
+        watermarkPosition && $(`.cm-modal select[name="watermarkPosition"] option[value="${watermarkPosition}"]`).attr('selected', true);
+
+        const compressionRatio = localStorage.getItem('compressionRatio');
+        compressionRatio && $(`.cm-modal select[name="compressionRatio"] option[value="${compressionRatio}"]`).attr('selected', true);
+
+        $(`.cm-modal input[name="watermarkColor"]`).on('change', function () {
+          localStorage.setItem('watermarkColor', $(this).val());
+        })
+
+        $(`.cm-modal input[name="watermarkText"]`).on('change', function () {
+          localStorage.setItem('watermarkText', $(this).val());
+        })
+
+        $(`.cm-modal select[name="watermarkPosition"]`).on('change', function () {
+          localStorage.setItem('watermarkPosition', $(this).val());
+        })
+
+        $(`.cm-modal select[name="compressionRatio"]`).on('change', function () {
+          localStorage.setItem('compressionRatio', $(this).val());
         })
       }
     })

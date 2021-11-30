@@ -570,7 +570,8 @@ body.lock-scroll {
           color: #F56C6C;
         }
 
-        input,
+        input[type="text"],
+        input[type="color"],
         select,
         textarea {
           width: auto;
@@ -583,6 +584,12 @@ body.lock-scroll {
           padding: 0 10px;
           border-radius: 3px;
           color: #606266;
+        }
+
+        input[type="color"] {
+          flex: none;
+          width: 80px;
+          padding: 0 3px;
         }
 
         textarea {
@@ -684,6 +691,7 @@ body.lock-scroll {
           border: 1px dashed #d9d9d9;
           border-radius: 8px;
           transition: border-color .35s;
+          margin-bottom: 15px;
 
           &__icon {
             width: 40px;
@@ -713,6 +721,36 @@ body.lock-scroll {
 
           &:hover {
             border-color: #A0B8EA;
+          }
+        }
+
+        &_list {
+          &__item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+
+            &--icon {
+              width: 22px;
+              height: 22px;
+              background-image: url(data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiPjxwYXRoIGQ9Ik05MjAuODk2IDQ3OS43NDRoLTczLjk4NFYzMzkuNzEyYzAtMzUuNjQ4LTI4Ljg2NC02NC41MTItNjQuNTEyLTY0LjUxMmgtMzI4Yy0yMC4xNiAwLTM2LjQ4LTE2LjMyLTM2LjQ4LTM2LjQxNnYuNTEyYzAtMzUuNjQ4LTI4Ljg2NC02NC41MTItNjQuNTEyLTY0LjUxMkgxMjIuODE2Yy0zNS42NDggMC02NC41MTIgMjguODY0LTY0LjUxMiA2NC41MTJ2NTQ1LjQ3MmMwIDM1LjY0OCAyOC44NjQgNjQuNTEyIDY0LjUxMiA2NC41MTJoNjYwLjQxNmMzNS42NDggMCA3NS4zMjgtMjguOTI4IDg4LjU3Ni02NC41MTJsODkuNTM2LTI0MC40NDhjMTMuMzEyLTM1LjcxMi00LjgtNjQuNTc2LTQwLjQ0OC02NC41NzZ6TTM1MS4yMzIgMjQxLjQ3MmMxLjQ3MiA1NS42MTYgNDcuMTY4IDEwMC40MTYgMTAzLjEwNCAxMDAuNDE2SDc4MC4xNlY0NzkuNjhIMjYwLjQ4Yy0zNS42NDggMC03NS4zMjggMjguOTI4LTg4LjU3NiA2NC41MTJMMTI0Ljk5MiA2NzAuMDhWMjQxLjQ3MmgyMjYuMjR6IiBmaWxsPSIjNTE1MTUxIi8+PC9zdmc+);
+              background-size: 100% 100%;
+              background-repeat: no-repeat;
+              margin-right: 3px;
+            }
+
+            &--text {
+              flex: 1;
+              font-size: 14px;
+              color: #606266;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
           }
         }
       }
