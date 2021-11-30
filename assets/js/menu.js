@@ -5,6 +5,7 @@ import create from './create';
 import typeface from '../config/typeface';
 import emoji from '../config/emoji';
 import emotion from '../config/emotion';
+import { upload, compressImg } from "./utils"
 
 export default class Menu {
   constructor(cm) {
@@ -209,18 +210,14 @@ export default class Menu {
     `);
     $('.cm-modal__wrapper-foot--cancle, .cm-modal__wrapper-head--close').on('click', () => {
       this._options.cancel();
-      $('body').removeClass('lock-scroll');
+      !$('.cm-container').hasClass('fullscreen') && $('body').removeClass('lock-scroll');
       $('.cm-modal').removeClass('active');
     });
     $('.cm-modal__wrapper-foot--confirm').on('click', () => {
       this._options.confirm();
+      !$('.cm-container').hasClass('fullscreen') && $('body').removeClass('lock-scroll');
       $('.cm-modal').removeClass('active');
     });
-    $(document).on('keyup', e => {
-      if (e.key !== 'Escape') return;
-      $('body').removeClass('lock-scroll');
-      $('.cm-modal').removeClass('active');
-    })
   }
 
   /**
@@ -303,6 +300,9 @@ export default class Menu {
               break;
             case 'emotion':
               this.handleEmotion();
+              break;
+            case 'upload':
+              this.handleUpload();
               break;
           }
         });
@@ -781,5 +781,45 @@ export default class Menu {
    */
   handleEmotion() {
     this.$createMenuModal(emotion, 'emotion', '其他表情', 'sessionStorageEmotion');
+  }
+
+  /**
+   * @description: 菜单栏 - 上传附件
+   * @param {*}
+   * @return {*}
+   */
+  handleUpload() {
+    this.$openModal({
+      title: '上传附件',
+      innerHtml: `
+        <div class="upload_dragger">
+          <div class="upload_dragger__icon"></div>
+          <div class="upload_dragger__text">将文件拖拽至此处或点击上传</div>
+          <input class="upload_dragger__input" type="file" multiple />
+        </div>
+        <div class="upload_list">
+          <div class="upload_list__item">
+
+          </div>
+        </div>
+      `,
+      confirm: () => {
+
+      },
+      callback: () => {
+        $(`.cm-modal input[type="file"]`).on('change', e => {
+          const files = Array.from(e.target.files);
+          files.forEach(file => {
+            const { type } = file;
+            // 若判断不出文件类型，直接不做任何操作
+            if (!type) return;
+            // 如果不是图片文件类型，直接调用上传
+            if (type.indexOf('image') === -1) return upload(file);
+            // 如果是图片类型，则先处理图片，处理完后进行上传
+            compressImg(file, window.SMEditor.compressionRatio);
+          })
+        })
+      }
+    })
   }
 }
