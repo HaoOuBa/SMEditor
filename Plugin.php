@@ -6,14 +6,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package SMEditor
  * @author HaoOuBa
- * @version 1.2.4
+ * @version 1.2.5
  * @link //78.al
  */
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
   public static $isDev = false;
-  public static $version = '1.2.4';
+  public static $version = '1.2.5';
 
   /**
    * 静态资源URL
