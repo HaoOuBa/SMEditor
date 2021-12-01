@@ -822,7 +822,7 @@ export default class Menu {
             // 如果不是图片文件类型，直接调用上传
             if (type.indexOf('image') === -1) return upload(file);
             // 如果是图片类型，则先处理图片，处理完后进行上传
-            compressImg(file, window.SMEditor.compressionRatio).then(file => upload(file));
+            compressImg(file).then(file => upload(file));
           });
         });
         $(`.cm-modal .upload_dragger__input`).on('dragenter', function () {

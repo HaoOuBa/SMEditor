@@ -6,14 +6,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package SMEditor
  * @author HaoOuBa
- * @version 1.2.8
+ * @version 1.2.9
  * @link //78.al
  */
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
   public static $isDev = false;
-  public static $version = '1.2.8';
+  public static $version = '1.2.9';
 
   /**
    * 静态资源URL
@@ -52,6 +52,7 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
     Typecho_Plugin::factory('admin/write-post.php')->richEditor = array('SMEditor_Plugin', 'SMEdit');
     Typecho_Plugin::factory('admin/write-page.php')->richEditor = array('SMEditor_Plugin', 'SMEdit');
     Typecho_Plugin::factory('Widget_Abstract_Contents')->content = array('SMEditor_Plugin', 'SMContent');
+    Typecho_Plugin::factory('Widget_Archive')->header = array('SMEditor_Plugin', 'SMPreview');
   }
 
   /**
@@ -93,9 +94,21 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
    * 注入函数
    * 
    */
+  public static function SMPreview()
+  {
+    $assetsUrl = self::_getAssetsUrl(false);
+    echo <<<EOF
+      <link rel="stylesheet" href="$assetsUrl/other/css/SMPreview.bundle.css" />
+      <script src="$assetsUrl/other/js/SMPreview.bundle.min.js"></script>
+EOF;
+  }
+
+  /**
+   * 注入函数
+   * 
+   */
   public static function SMEdit()
   {
-
 ?>
     <link rel="stylesheet" href="<?php self::_getAssetsUrl(); ?>/assets/plugin/Prism/Prism.min.css">
     <link rel="stylesheet" href="<?php self::_getAssetsUrl(); ?>/assets/css/SMEditor.bundle.css" />

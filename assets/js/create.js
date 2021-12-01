@@ -2,6 +2,10 @@ const emotionAssetsURL = window.SMEditor.assetsURL + '/assets/img';
 const parser = new HyperDown();
 
 export default function create(str) {
+
+  // 转换可以识别的空格
+  if (str.indexOf('　') !== -1) (str = str.replace(/　/g, '&emsp;'));
+
   // 生产html字符串
   str = parser.makeHtml(str);
 
