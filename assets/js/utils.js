@@ -69,6 +69,14 @@ export const compressImg = file => {
  * @return {*}
  */
 export const upload = (file) => {
+  const $item = $(`
+    <div class="upload_list__item">
+      <div class="upload_list__item--icon"></div>
+      <div class="upload_list__item--text">${file.name}</div>
+      <div class="upload_list__item--speed">0%</div>
+    </div>
+  `)
+  $(`.cm-modal .upload_list`).append($item);
   let api = window.SMEditor.uploadUrl;
   const cid = $('input[name="cid"]').val();
   cid && (api = api + '&cid=' + cid);
@@ -81,15 +89,22 @@ export const upload = (file) => {
     contentType: false,
     processData: false,
     dataType: 'json',
-    success: res => {
-      if (!res) return;
-      const { title, isImage, url } = res[1];
-      $(`.cm-modal .upload_list`).append(`
-        <div class="upload_list__item" data-title="${title}" data-isImage="${isImage}" data-url="${url}">
-          <div class="upload_list__item--icon"></div>
-          <div class="upload_list__item--text">${title}</div>
-        </div>
-      `)
+    xhr: () => {
+      const xhr = $.ajaxSettings.xhr();
+      if (!xhr.upload) return;
+      xhr.upload.addEventListener('progress', e => {
+        let percent = (e.loaded / e.total) * 100;
+        $item.find('.upload_list__item--speed').html(`${Math.floor(percent)}%`);
+      }, false);
+      return xhr;
     },
+    success: res => {
+      if (!res) $item.attr("data-success", "0").find(".upload_list__item--speed").addClass('fail').html('ERR!');
+      const { title, isImage, url } = res[1];
+      $item.attr({ "data-success": "1", "data-title": title, "data-isImage": isImage, "data-url": url }).find(".upload_list__item--speed").addClass("successful").html("100%");
+    },
+    error: () => {
+      $item.attr("data-success", "0").find(".upload_list__item--speed").addClass('fail').html('ERR!');
+    }
   });
 }

@@ -804,13 +804,10 @@ export default class Menu {
       `,
       confirm: () => {
         let str = '';
-        $('.upload_list__item').each((index, item) => {
-          if (item.getAttribute('data-isImage') === "true") {
-            str += `![${item.getAttribute('data-title')}](${item.getAttribute('data-url')})`;
-          } else {
-            str += `[${item.getAttribute('data-title')}](${item.getAttribute('data-url')})`;
-          }
-          str += '\n';
+        $(".upload_list__item").each((index, item) => {
+          // 如果是失败状态或没上传完的时候，不做任何操作
+          if (item.getAttribute("data-success") === "0" || !item.getAttribute("data-success")) return;
+          str += `${item.getAttribute('data-isImage') === "true" ? "!" : ""}[${item.getAttribute('data-title')}](${item.getAttribute('data-url')})\n`;
         })
         this.$replaceSelection(this.$getLineCh() ? '\n' : '' + str);
         this.$focus();
@@ -826,7 +823,13 @@ export default class Menu {
             if (type.indexOf('image') === -1) return upload(file);
             // 如果是图片类型，则先处理图片，处理完后进行上传
             compressImg(file, window.SMEditor.compressionRatio).then(file => upload(file));
-          })
+          });
+        });
+        $(`.cm-modal .upload_dragger__input`).on('dragenter', function () {
+          $(`.cm-modal .upload_dragger`).addClass("drop");
+        })
+        $(`.cm-modal .upload_dragger__input`).on('dragleave drop', function () {
+          $(`.cm-modal .upload_dragger`).removeClass("drop");
         })
       }
     })
@@ -848,7 +851,7 @@ export default class Menu {
         </div>
         <div class="fitem">
           <label>图片水印文字</label>
-          <input name="watermarkText" type="text" placeholder="请输入水印文字" maxlength="5" />
+          <input name="watermarkText" type="text" placeholder="请输入水印文字" maxlength="8" />
         </div>
         <div class="fitem">
           <label>图片水印位置</label>

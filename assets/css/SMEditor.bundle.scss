@@ -690,7 +690,6 @@ body.lock-scroll {
           height: 120px;
           border: 1px dashed #d9d9d9;
           border-radius: 8px;
-          transition: border-color .35s;
           margin-bottom: 15px;
 
           &__icon {
@@ -719,16 +718,26 @@ body.lock-scroll {
             cursor: pointer;
           }
 
+          &.drop {
+            border: 2px dashed #409EFF;
+          }
+
           &:hover {
             border-color: #A0B8EA;
           }
+
         }
 
         &_list {
+          max-height: 200px;
+          overflow-y: auto;
+
           &__item {
             display: flex;
             align-items: center;
-            margin-bottom: 5px;
+            margin: 0 5px 5px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed #DCDFE6;
 
             &--icon {
               width: 22px;
@@ -736,7 +745,6 @@ body.lock-scroll {
               background-image: url(data:image/svg+xml;base64,PHN2ZyBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiPjxwYXRoIGQ9Ik05MjAuODk2IDQ3OS43NDRoLTczLjk4NFYzMzkuNzEyYzAtMzUuNjQ4LTI4Ljg2NC02NC41MTItNjQuNTEyLTY0LjUxMmgtMzI4Yy0yMC4xNiAwLTM2LjQ4LTE2LjMyLTM2LjQ4LTM2LjQxNnYuNTEyYzAtMzUuNjQ4LTI4Ljg2NC02NC41MTItNjQuNTEyLTY0LjUxMkgxMjIuODE2Yy0zNS42NDggMC02NC41MTIgMjguODY0LTY0LjUxMiA2NC41MTJ2NTQ1LjQ3MmMwIDM1LjY0OCAyOC44NjQgNjQuNTEyIDY0LjUxMiA2NC41MTJoNjYwLjQxNmMzNS42NDggMCA3NS4zMjgtMjguOTI4IDg4LjU3Ni02NC41MTJsODkuNTM2LTI0MC40NDhjMTMuMzEyLTM1LjcxMi00LjgtNjQuNTc2LTQwLjQ0OC02NC41NzZ6TTM1MS4yMzIgMjQxLjQ3MmMxLjQ3MiA1NS42MTYgNDcuMTY4IDEwMC40MTYgMTAzLjEwNCAxMDAuNDE2SDc4MC4xNlY0NzkuNjhIMjYwLjQ4Yy0zNS42NDggMC03NS4zMjggMjguOTI4LTg4LjU3NiA2NC41MTJMMTI0Ljk5MiA2NzAuMDhWMjQxLjQ3MmgyMjYuMjR6IiBmaWxsPSIjNTE1MTUxIi8+PC9zdmc+);
               background-size: 100% 100%;
               background-repeat: no-repeat;
-              margin-right: 3px;
             }
 
             &--text {
@@ -746,11 +754,39 @@ body.lock-scroll {
               white-space: nowrap;
               overflow: hidden;
               text-overflow: ellipsis;
+              margin: 0 5px;
+            }
+
+            &--speed {
+              color: #909399;
+              font-size: 12px;
+
+              &.successful {
+                color: #67C23A;
+              }
+
+              &.fail {
+                color: #F56C6C;
+              }
             }
 
             &:last-child {
               margin-bottom: 0;
             }
+          }
+
+          &::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+          }
+
+          &::-webkit-scrollbar-thumb {
+            border-radius: 2.5px;
+            background: #c0c4cc;
+          }
+
+          &::-webkit-scrollbar-track {
+            background: #fff;
           }
         }
       }

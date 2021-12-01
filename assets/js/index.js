@@ -136,7 +136,7 @@ class SMEditor {
                     'progress',
                     e => {
                       let percent = (e.loaded / e.total) * 100;
-                      $('.cm-progress').css('transition', 'width 0.35s').width(percent + '%');
+                      $('.cm-progress').css('transition', 'width 0.35s').width(`${Math.floor(percent)}%`);
                     },
                     false
                   );
