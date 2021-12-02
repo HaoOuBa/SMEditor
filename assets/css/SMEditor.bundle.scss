@@ -1,3 +1,5 @@
+@import url("../../other/css/SMPreview.bundle.css");
+
 #text,
 #text~.resize {
   display: none;
@@ -238,11 +240,6 @@ body.lock-scroll {
     img:not([class]) {
       max-width: 100%;
       max-height: 100%;
-    }
-
-    .sm-emotion {
-      max-height: 26px;
-      vertical-align: bottom;
     }
 
     ol,
@@ -652,7 +649,7 @@ body.lock-scroll {
           min-height: 35px;
           box-sizing: border-box;
 
-          .sm-emotion {
+          .emotion {
             max-width: 70%;
           }
 

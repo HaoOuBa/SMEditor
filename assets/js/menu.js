@@ -113,7 +113,7 @@ export default class Menu {
           $(`.cm-modal .menu_content`).eq(0).addClass('active').siblings().removeClass('active');
         }
         // 设置懒加载功能
-        const lazyLoadImgs = document.querySelectorAll(`.cm-modal .menu_content[data-type="emotion"] .sm-emotion`);
+        const lazyLoadImgs = document.querySelectorAll(`.cm-modal .menu_content[data-type="emotion"] .emotion`);
         if (IntersectionObserver) {
           const observer = new IntersectionObserver((changes) => {
             changes.forEach(async change => {
@@ -303,6 +303,12 @@ export default class Menu {
               break;
             case 'upload':
               this.handleUpload();
+              break;
+            case 'task-no':
+              this.handleTask(false);
+              break;
+            case 'task-yes':
+              this.handleTask(true);
               break;
           }
         });
@@ -910,5 +916,15 @@ export default class Menu {
         })
       }
     })
+  }
+
+  /**
+   * @description: 菜单栏 - 任务
+   * @param {*} type 完成状态
+   * @return {*}
+   */
+  handleTask(type) {
+    this.$replaceSelection(` {${type ? '√' : '×'}} `);
+    this.$focus();
   }
 }

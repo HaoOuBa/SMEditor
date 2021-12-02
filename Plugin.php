@@ -6,14 +6,14 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
  * 
  * @package SMEditor
  * @author HaoOuBa
- * @version 1.2.9
+ * @version 1.3.0
  * @link //78.al
  */
 
 class SMEditor_Plugin implements Typecho_Plugin_Interface
 {
   public static $isDev = false;
-  public static $version = '1.2.9';
+  public static $version = '1.3.0';
 
   /**
    * 静态资源URL
@@ -41,6 +41,21 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
       },
       $text
     );
+  }
+
+  /**
+   * 解析短代码
+   * 
+   */
+  public static function _parseCode($text)
+  {
+    if (strpos($text, '{×}') || strpos($text, '{√}')) {
+      $text = strtr($text, array(
+        "{×}" => '<span class="sm-task"></span>',
+        "{√}" => '<span class="sm-task checked"></span>'
+      ));
+    }
+    return $text;
   }
 
   /**
@@ -87,7 +102,8 @@ class SMEditor_Plugin implements Typecho_Plugin_Interface
   public static function SMContent($text, $context)
   {
     $text = self::_parseEmotion($text);
-    return $context->isMarkdown ? $context->markdown($text) : $context->autoP($text);
+    $text = $context->isMarkdown ? $context->markdown($text) : $context->autoP($text);
+    return self::_parseCode($text);
   }
 
   /**
