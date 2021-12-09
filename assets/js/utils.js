@@ -57,7 +57,7 @@ export const compressImg = file => {
         canvas.setAttribute('height', height);
         ctx.drawImage(image, 0, 0, width, height);
         createWatermark(ctx, width, height);
-        canvas.toBlob(blob => resolve(new window.File([blob], file.name, { type: file.type })), file.type, localStorage.getItem('compressionRatio') || 1);
+        canvas.toBlob(blob => resolve(new window.File([blob], file.name, { type: file.type })), 'image/webp', localStorage.getItem('compressionRatio') || 1);
       };
     };
   });
